@@ -89,10 +89,20 @@ class Server extends Model
         $checkVersions = $options['checkVersions'] ?: false;
 
         $pinger = new MinecraftPinger($this->ip, $this->port);
-        $pingResponse = $pinger->ping(2000, 2000);
+        try {
+            $pingResponse = $pinger->ping(2000, 2000);
+        } catch (MinecraftPingException $e) {
+            $pingResponse = null;
+        }
 
         // Online players
-        $onlinePlayers = isset($pingResponse->players->online) ? $pingResponse->players->online : 0;
+        if ($pingResponse === null) {
+            $onlinePlayers = -1;
+            $updateIcon = false;
+            $checkVersions = false;
+        } else {
+            $onlinePlayers = isset($pingResponse->players->online) ? $pingResponse->players->online : 0;
+        }
 
         // Favicon
         $favicon = null;
