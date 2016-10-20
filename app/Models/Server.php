@@ -16,6 +16,8 @@ use MinecraftPinger\MinecraftPingException;
  * @property mixed  icon
  * @property int    players
  * @property Carbon updated_at
+ * @property Carbon icon_updated_at
+ * @property Carbon versions_updated_at
  */
 class Server extends Model
 {
@@ -28,17 +30,28 @@ class Server extends Model
         'icon',
         'players',
         'updated_at',
+        'icon_updated_at',
+        'versions_updated_at',
     ];
 
     /*
      * Specify which properties correspond to dates
      */
-    protected $dates = ['updated_at'];
+    protected $dates = [
+        'updated_at',
+        'icon_updated_at',
+        'versions_updated_at'
+    ];
 
     /*
      * Disable Eloquent timestamps
      */
     public $timestamps = false;
+
+    public function getNameId()
+    {
+        return 'Server#'.$this->id.'/'.$this->name;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -100,10 +113,7 @@ class Server extends Model
                 if ($mainProtocol === $version->protocol_id) {
                     $supportedVersions[$version->id] = $version;
                 } else {
-                    $checkPingResponse = $pinger->ping(2000, 2000, $version->protocol_id);
-                    if (isset($checkPingResponse->version->protocol) &&
-                        $checkPingResponse->version->protocol === $version->protocol_id
-                    ) {
+                    if ($this->checkVersion($pinger, $version->protocol_id)) {
                         $supportedVersions[$version->id] = $version;
                     }
                     usleep(100 * 1000);
@@ -112,13 +122,27 @@ class Server extends Model
         }
 
         // Store data
-        \DB::transaction(function () use ($onlinePlayers, $favicon, $supportedVersions) {
+        \DB::transaction(function () use (
+            $updateIcon,
+            $checkVersions,
+            $onlinePlayers,
+            $favicon,
+            $supportedVersions
+        ) {
+            $now = Carbon::now();
+
             // Update basic info
             $this->players = $onlinePlayers;
             if ($favicon !== null) {
                 $this->icon = $favicon;
             }
-            $this->updated_at = Carbon::now();
+            $this->updated_at = $now;
+            if ($updateIcon) {
+                $this->icon_updated_at = $now;
+            }
+            if ($checkVersions) {
+                $this->versions_updated_at = $now;
+            }
             $this->save();
 
             // Update versions
@@ -140,8 +164,35 @@ class Server extends Model
             }
 
             // Update stats entries
-            // TODO: Store stats entries
+            $statEntry = new ServerStat([
+                'recorded_at' => $now,
+                'players'     => $onlinePlayers,
+            ]);
+            $statEntry->server()->associate($this);
+            $statEntry->save();
         });
+    }
+
+    protected function checkVersion(MinecraftPinger $pinger, $protocolVersion, $maxRetries = 3)
+    {
+        $trys = 0;
+        do {
+            if ($trys > 0) {
+                usleep(($trys * 150) * 1000);
+            }
+            try {
+                $checkPingResponse = $pinger->ping(2000, 2000, $protocolVersion);
+                if (isset($checkPingResponse->version->protocol) &&
+                    $checkPingResponse->version->protocol === $protocolVersion
+                ) {
+                    return true;
+                }
+            } catch (MinecraftPingException $ignored) {
+            }
+            $trys++;
+        } while ($trys < $maxRetries);
+
+        return false;
     }
 
     protected function validateBase64Png($base64Image)

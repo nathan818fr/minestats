@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        PingServerCommand::class
+        PingServerCommand::class,
+        PingTasksCommand::class,
     ];
 
     /**
@@ -24,8 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('tasks:ping', [
+            'duration' => 60
+        ])->everyMinute();
     }
 
     /**
