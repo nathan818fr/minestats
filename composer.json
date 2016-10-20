@@ -7,7 +7,9 @@
     "require": {
         "php": ">=5.6.4",
         "laravel/framework": "5.3.*",
-        "barryvdh/laravel-ide-helper": "^2.2"
+        "barryvdh/laravel-ide-helper": "^2.2",
+        "nathan818/phpuc-net-sockets": "^1.0",
+        "nathan818/php-minecraft-pinger": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
