@@ -110,12 +110,10 @@ const serversList = new Vue({
                 this.servers = servers.body;
             });
         },
-        filtersUpdated: function () {
+        filtersUpdated: _.debounce(function () {
             this.saveFilters();
-            _.debounce(function () {
-                this.fetchServers();
-            }, 1000);
-        },
+            this.fetchServers();
+        }, 1000),
         saveFilters: function () {
             store.set('minestats.serversList.filters', {
                 show: this.filters.show,
