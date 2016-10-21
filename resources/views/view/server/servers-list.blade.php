@@ -8,6 +8,7 @@
                 <select name="languages" v-model="filters.languages" multiple="multiple">
                     @foreach(\MineStats\Models\Language::orderBy('id')->get() as $language)
                         <option value="{{ $language->id }}">
+                            {{ '<span class="flag flag-'.$language->id.'"></span>' }}
                             @lang('server.lang.' . $language->id)
                         </option>
                     @endforeach

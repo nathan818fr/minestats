@@ -69,6 +69,7 @@ const serversList = new Vue({
             nonSelectedText: 'All',
             allSelectedText: 'All',
             selectAllNumber: false,
+            enableHTML: true,
             onChange: function () {
                 self.filters.languages = this.$select.val();
             }
