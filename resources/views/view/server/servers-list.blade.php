@@ -16,13 +16,12 @@
                     <form class=" clearfix">
                         <div class="{{ $cols }}">
                             <div class="form-group">
-                                <label for="serversFilterLanguages">@lang('server.filters.languages')</label>
-                                <select id="serversFilterLanguages" name="languages" v-model="filters.languages"
+                                <label for="serversFilterTypes">@lang('server.filters.types')</label>
+                                <select id="serversFilterTypes" name="types" v-model="filters.types"
                                         class="form-control" multiple="multiple">
-                                    @foreach(\MineStats\Models\Language::orderBy('id')->get() as $language)
-                                        <option value="{{ $language->id }}">
-                                            {{ '<span class="flag flag-'.$language->id.'"></span>' }}
-                                            @lang('server.lang.' . $language->id)
+                                    @foreach(\MineStats\Repositories\TypeRepository::getTypes() as $type)
+                                        <option value="{{ $type }}">
+                                            {{ $type }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -36,6 +35,20 @@
                                     @foreach(\MineStats\Models\Version::orderBy('protocol_id', 'desc')->get() as $version)
                                         <option value="{{ $version->id }}">
                                             {{ $version->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="{{ $cols }}">
+                            <div class="form-group">
+                                <label for="serversFilterLanguages">@lang('server.filters.languages')</label>
+                                <select id="serversFilterLanguages" name="languages" v-model="filters.languages"
+                                        class="form-control" multiple="multiple">
+                                    @foreach(\MineStats\Models\Language::orderBy('id')->get() as $language)
+                                        <option value="{{ $language->id }}">
+                                            {{ '<span class="flag flag-'.$language->id.'"></span>' }}
+                                            @lang('server.lang.' . $language->id)
                                         </option>
                                     @endforeach
                                 </select>

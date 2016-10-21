@@ -43,7 +43,8 @@ const serversList = new Vue({
                 show: false,
                 languages: [],
                 versions: [],
-                secondaryLanguages: false
+                secondaryLanguages: false,
+                types: []
             },
             _fetchServersTimer: null
         };
@@ -57,7 +58,8 @@ const serversList = new Vue({
     watch: {
         'filters.languages': 'filtersUpdated',
         'filters.versions': 'filtersUpdated',
-        'filters.secondaryLanguages': 'filtersUpdated'
+        'filters.secondaryLanguages': 'filtersUpdated',
+        'filters.types': 'filtersUpdated'
     },
 
     created: function () {
@@ -90,6 +92,14 @@ const serversList = new Vue({
                 self.filters.versions = this.$select.val();
             }
         });
+        $('select[name=types]', this.$el).multiselect({
+            nonSelectedText: 'All',
+            allSelectedText: 'All',
+            selectAllNumber: false,
+            onChange: function () {
+                self.filters.types = this.$select.val();
+            }
+        });
     },
 
     beforeDestroy: function () {
@@ -106,6 +116,8 @@ const serversList = new Vue({
                 options.languages = this.filters.languages.join(',');
             if (this.filters.versions.length)
                 options.versions = this.filters.versions.join(',');
+            if (this.filters.types.length)
+                options.types = this.filters.types.join(',');
             this.$http.get('/api/servers?' + $.param(options)).then(function (servers) {
                 this.servers = servers.body;
             });
@@ -119,7 +131,8 @@ const serversList = new Vue({
                 show: this.filters.show,
                 languages: this.filters.languages,
                 versions: this.filters.versions,
-                secondaryLanguages: this.filters.secondaryLanguages
+                secondaryLanguages: this.filters.secondaryLanguages,
+                types: this.filters.types
             });
         }
     },

@@ -18,6 +18,7 @@ return [
         'languages'                   => 'Languages',
         'versions'                    => 'Versions',
         'display_secondary_languages' => 'Display secondary languages',
+        'types'                       => 'Server Type',
     ],
 
 ];

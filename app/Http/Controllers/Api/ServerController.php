@@ -8,6 +8,7 @@ use MineStats\Http\Controllers\Controller;
 use MineStats\Models\Language;
 use MineStats\Models\Server;
 use MineStats\Models\Version;
+use MineStats\Repositories\TypeRepository;
 
 class ServerController extends Controller
 {
@@ -45,6 +46,7 @@ class ServerController extends Controller
         $this->arrayParam($req, 'with');
         $this->arrayParam($req, 'languages');
         $this->arrayParam($req, 'versions');
+        $this->arrayParam($req, 'types');
         $this->validateOnly($req, [
             'with'               => 'array|filled|in:icon,versions,languages',
             'order'              => 'order_in:id,players',
@@ -55,6 +57,7 @@ class ServerController extends Controller
             'versions'           => function () {
                 return 'array|filled|in:'.$this->versionsList();
             },
+            'types'              => 'array|filled|in:'.join(',', TypeRepository::getTypes()),
         ]);
 
         $with = $req->get('with');
@@ -62,12 +65,17 @@ class ServerController extends Controller
         $languages = $req->get('languages');
         $secondaryLanguages = $req->get('secondaryLanguages') ? true : false;
         $versions = $req->get('versions');
+        $types = $req->get('types');
 
         // Get servers
         $servers = Server::query();
 
         if ($order !== null) {
             $servers->orderBy($order[0], $order[1]);
+        }
+
+        if ($types !== null) {
+            $servers->whereIn('type', $types);
         }
 
         if ($with !== null && in_array('versions', $with)) {
