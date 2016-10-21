@@ -36,12 +36,14 @@ class PingServerCommand extends ServerCommand
                 'checkVersions' => $checkVersions,
             ];
             if ($autoUpdate) {
-                if ($server->icon_updated_at->diffInMinutes(Carbon::now()) >
+                if ($server->icon_updated_at === null ||
+                    $server->icon_updated_at->diffInMinutes(Carbon::now()) >
                     config('minestats.favicon_cache_period')
                 ) {
                     $options['updateIcon'] = true;
                 }
-                if ($server->versions_updated_at->diffInMinutes(Carbon::now()) >
+                if ($server->versions_updated_at === null ||
+                    $server->versions_updated_at->diffInMinutes(Carbon::now()) >
                     config('minestats.versions_cache_period')
                 ) {
                     $options['checkVersions'] = true;
