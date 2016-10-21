@@ -1,0 +1,96 @@
+#servers-list {
+  margin: 0 -4px;
+
+  .list {
+    .case {
+      float: left;
+      padding: 0 4px;
+
+      @media (max-width: $screen-xs-max) {
+        width: 100%;
+      }
+      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+        width: (100% / 2);
+      }
+      @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+        width: (100% / 2);
+      }
+      @media (min-width: $screen-lg-min) {
+        width: (100% / 3);
+      }
+    }
+
+    .server {
+      border-bottom: 1px solid #d4d4d4;
+      padding: 0 3px 4px;
+      margin-bottom: 10px;
+
+      .emblem {
+        float: left;
+        text-align: center;
+        width: 64px;
+        padding-top: 2px;
+
+        .icon {
+          width: 64px;
+          height: 64px;
+        }
+        .icon-empty {
+          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAe1BMVEUAAADGHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3GHR3R+27eAAAAKHRSTlMAkAbvr1X0uH8x3OsNjHkTEMx0YU4oIxzj2MSlWLmF1qqkRzrDpm1Zn4n8tgAAAgpJREFUWMOll+tygkAMheMiV5WL1Xpvra2a93/CztgOm4OAhyG/GDb5YDeXTaRLNmFyqLaRarStDkm4kUGSLnbakN0iZa3ny09tlc/lnDAvk0A7JUjKV/ZvM+2V2Vuv+fteX8r+vds+DJSQIOyyXygpi1Zzd1BaDq7FPtYBEj8Tvpo60SlfrQvnivUqP0XN1a+m/UfzE3f4hrvH/ecQ4uo0bQnvKeqE4P8A7aVVLhl408bDj6JMOrLkbJV+TPyqcgRJrFId1eVMacLN5kWJ2OH/kPzvLNAhBHMOwV99WKoOIZTGF8vHG/NiyhAuXiMTEfm2/p8wBPOZbxFrkwpFSFHB19+TCEc4+VotsvHaRyEJR7++MWkUOSEJLvIpZfI4FmEJPrc/zJHmQhNy47iqfl4JTVjVa5Vs6+e10IR1vbQVfx6F0ITCZ6R4LSc0wXnXAYAjIAC2wBFwC3CIHAEPEdzIEdCNEEgcAQMJQpkjYChDMnEETCZMZ4qA6YwFhSDgDnaokHIELGlYVBkCFlUs6xeGYOyz5sWSlQwBLxa82s7CEPBqw/syH0JI2q73G0+YFa0NRkITTNsMLfJ5zhH2nU1Wdum6VLHJGtvm9Tfa8REbzeNTo/m61Y19qxu/anXHN9vj2/3xA8f4kYcfukaOfWMHz7GjLynpJGtaZxNm+Mbx//oY/4OsuvaM/7+sfEEzL5QKsQAAAABJRU5ErkJggg==');
+        }
+
+        .position {
+          margin-top: 2px;
+        }
+      }
+
+      .details {
+        margin-left: 64px + 8px;
+
+        h3 {
+          margin: 0;
+          padding: 0;
+          font-size: 19px;
+          font-weight: 700;
+          text-transform: uppercase;
+
+          .type {
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #999;
+          }
+        }
+
+        .address {
+          font-size: 14px;
+        }
+
+        ul.versions {
+          list-style: none;
+          margin: 3px 0 0;
+          padding: 0;
+          font-size: 11px;
+          min-height: 19px;
+
+          li {
+            display: inline-block;
+            margin-right: 6px;
+            padding: 0 4px;
+            border-radius: 3px;
+            border: 1px solid #999;
+            background: #ccc;
+            color: #444;
+          }
+        }
+
+        .status {
+          font-size: 16px;
+          margin-top: 2px;
+        }
+        .status-down {
+          color: #6d0c0c;
+        }
+      }
+    }
+  }
+}

@@ -13,7 +13,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \Validator::extend('order_in', function ($attribute, $value, $parameters, $validator) {
+            if (starts_with($value, '-')) {
+                $value = substr($value, 1);
+            }
+
+            return in_array($value, $parameters);
+        });
     }
 
     /**

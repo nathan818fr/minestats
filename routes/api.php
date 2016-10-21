@@ -13,4 +13,4 @@ use Illuminate\Http\Request;
 |
 */
 
-//
+Route::get('servers', 'Api\ServerController@getServers');

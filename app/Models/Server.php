@@ -48,6 +48,24 @@ class Server extends Model
      */
     public $timestamps = false;
 
+    /*
+     * Serialization hidden fields
+     */
+    protected $hidden = ['icon'];
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        if (isset($array['icon']) && !empty($array['icon'])) {
+            $array['icon'] = 'data:image/png;base64,' . base64_encode($array['icon']);
+        }
+
+        return $array;
+    }
+
+    /**
+     * @return string
+     */
     public function getNameId()
     {
         return 'Server#'.$this->id.'/'.$this->name;

@@ -24,6 +24,11 @@ class Version extends Model
      */
     public $timestamps = false;
 
+    /*
+     * Serialization hidden fields
+     */
+    protected $hidden = ['pivot'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

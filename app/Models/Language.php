@@ -14,6 +14,11 @@ class Language extends Model
     ];
 
     /*
+     * Non-integer id
+     */
+    public $incrementing = false;
+
+    /*
      * Disable Eloquent timestamps
      */
     public $timestamps = false;
@@ -24,5 +29,16 @@ class Language extends Model
     public function servers()
     {
         return $this->belongsToMany('MineStats\Models\Server', 'server_languages', 'language', null)->withPivot('main');
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        if (isset($array['pivot']['main'])) {
+            $array['main'] = $array['pivot']['main'];
+            unset($array['pivot']);
+        }
+
+        return $array;
     }
 }

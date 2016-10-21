@@ -14,5 +14,10 @@ require('laravel-elixir-vue-2');
  */
 
 elixir(function (mix) {
-    mix.sass('app.scss', 'public/assets/css/app.css').webpack('app.js', 'public/assets/js/app.js');
+    mix.copy('resources/assets/lib/flags/flags.png', 'public/assets/css/');
+    mix.sass([
+        'app.scss',
+        '../lib/flags/flags.css',
+        '../../../node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css'
+    ], 'public/assets/css/app.css').webpack('app.js', 'public/assets/js/app.js');
 });
