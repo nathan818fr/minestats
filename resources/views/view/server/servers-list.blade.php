@@ -6,7 +6,7 @@
         <div id="servers-list" class="clearfix" v-cloak>
             <div class="filters">
                 <div class="filters-head">
-                    <a href="javascript:;" v-on:click="filters.show = !filters.show">
+                    <a href="javascript:;" v-on:click="filters.show = !filters.show; saveFilters()">
                         <i :class="['glyphicon', 'glyphicon-chevron-' + (filters.show ? 'up' : 'down') ]"></i>
                         @lang('server.filters.filters')
                     </a>

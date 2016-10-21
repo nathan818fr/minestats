@@ -36,21 +36,28 @@ Vue.filter('number-count', function (value) {
 const serversList = new Vue({
     el: '#servers-list',
 
-    data: {
-        servers: [],
-        filters: {
-            show: false,
-            languages: [],
-            versions: [],
-            secondaryLanguages: false
-        },
-        _fetchServersTimer: null
+    data: function () {
+        var data = {
+            servers: [],
+            filters: {
+                show: false,
+                languages: [],
+                versions: [],
+                secondaryLanguages: false
+            },
+            _fetchServersTimer: null
+        };
+        var filters = store.get('minestats.serversList.filters');
+        if (filters) {
+            _.assign(data.filters, filters);
+        }
+        return data;
     },
 
     watch: {
-        'filters.languages': 'debounceFetchServers',
-        'filters.versions': 'debounceFetchServers',
-        'filters.secondaryLanguages': 'debounceFetchServers'
+        'filters.languages': 'filtersUpdated',
+        'filters.versions': 'filtersUpdated',
+        'filters.secondaryLanguages': 'filtersUpdated'
     },
 
     created: function () {
@@ -103,9 +110,20 @@ const serversList = new Vue({
                 this.servers = servers.body;
             });
         },
-        debounceFetchServers: _.debounce(function () {
-            this.fetchServers();
-        }, 1000)
+        filtersUpdated: function () {
+            this.saveFilters();
+            _.debounce(function () {
+                this.fetchServers();
+            }, 1000);
+        },
+        saveFilters: function () {
+            store.set('minestats.serversList.filters', {
+                show: this.filters.show,
+                languages: this.filters.languages,
+                versions: this.filters.versions,
+                secondaryLanguages: this.filters.secondaryLanguages
+            });
+        }
     },
 
     computed: {
