@@ -5,26 +5,56 @@
     <div class="container content-margin-top">
         <div id="servers-list" class="clearfix" v-cloak>
             <div class="filters">
-                <select name="languages" v-model="filters.languages" multiple="multiple">
-                    @foreach(\MineStats\Models\Language::orderBy('id')->get() as $language)
-                        <option value="{{ $language->id }}">
-                            {{ '<span class="flag flag-'.$language->id.'"></span>' }}
-                            @lang('server.lang.' . $language->id)
-                        </option>
-                    @endforeach
-                </select>
-                <select name="versions" v-model="filters.versions" multiple="multiple">
-                    @foreach(\MineStats\Models\Version::orderBy('protocol_id', 'desc')->get() as $version)
-                        <option value="{{ $version->id }}">
-                            {{ $version->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <label>
-                    <input type="checkbox" name="secondaryLanguages" v-model="filters.secondaryLanguages">
-                    @lang('server.filters.display_secondary_languages')
-                </label>
+                <div class="filters-head">
+                    <a href="javascript:;" v-on:click="filters.show = !filters.show">
+                        <i :class="['glyphicon', 'glyphicon-chevron-' + (filters.show ? 'up' : 'down') ]"></i>
+                        @lang('server.filters.filters')
+                    </a>
+                </div>
+                <div class="filters-content" v-show="filters.show">
+                    <?php $cols = 'col-sm-6 col-md-4 col-lg-3'; ?>
+                    <form class=" clearfix">
+                        <div class="{{ $cols }}">
+                            <div class="form-group">
+                                <label for="serversFilterLanguages">@lang('server.filters.languages')</label>
+                                <select id="serversFilterLanguages" name="languages" v-model="filters.languages"
+                                        class="form-control" multiple="multiple">
+                                    @foreach(\MineStats\Models\Language::orderBy('id')->get() as $language)
+                                        <option value="{{ $language->id }}">
+                                            {{ '<span class="flag flag-'.$language->id.'"></span>' }}
+                                            @lang('server.lang.' . $language->id)
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="{{ $cols }}">
+                            <div class="form-group">
+                                <label for="serversFilterVersions">@lang('server.filters.versions')</label>
+                                <select id="serversFilterVersions" name="versions" v-model="filters.versions"
+                                        multiple="multiple">
+                                    @foreach(\MineStats\Models\Version::orderBy('protocol_id', 'desc')->get() as $version)
+                                        <option value="{{ $version->id }}">
+                                            {{ $version->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="{{ $cols }}">
+                            <div class="form-group">
+                                <label class="form-empty-label">&nbsp;</label>
+                                <label class="form-control-static">
+                                    <input type="checkbox" name="secondaryLanguages"
+                                           v-model="filters.secondaryLanguages">
+                                    @lang('server.filters.display_secondary_languages')
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
+
             <div class="list">
                 <div v-for="(server, index) in orderedServers" :key="server.id" class="case">
                     <div :id="['server-' + server.id]"

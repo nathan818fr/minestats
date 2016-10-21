@@ -15,6 +15,7 @@ require('laravel-elixir-vue-2');
 
 elixir(function (mix) {
     mix.copy('resources/assets/lib/flags/flags.png', 'public/assets/css/');
+    mix.copy('node_modules/bootstrap-sass/assets/fonts/*', 'public/assets/fonts/');
     mix.sass([
         'app.scss',
         '../lib/flags/flags.css',

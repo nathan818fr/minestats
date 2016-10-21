@@ -39,6 +39,7 @@ const serversList = new Vue({
     data: {
         servers: [],
         filters: {
+            show: false,
             languages: [],
             versions: [],
             secondaryLanguages: false

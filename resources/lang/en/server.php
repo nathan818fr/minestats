@@ -14,6 +14,9 @@ return [
     ],
 
     'filters' => [
+        'filters'                     => 'Filters',
+        'languages'                   => 'Languages',
+        'versions'                    => 'Versions',
         'display_secondary_languages' => 'Display secondary languages',
     ],
 
