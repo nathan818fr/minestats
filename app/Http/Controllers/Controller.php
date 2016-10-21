@@ -19,6 +19,15 @@ class Controller extends BaseController
                 throw new \HttpInvalidParamException('Illegal parameter: '.e($k));
             }
         }
+        foreach ($rules as $k => $rule) {
+            if ($rule instanceof \Closure) {
+                if ($req->get($k) !== null) {
+                    $rules[$k] = $rule();
+                } else {
+                    unset($rules[$k]);
+                }
+            }
+        }
         $this->validate($req, $rules);
     }
 

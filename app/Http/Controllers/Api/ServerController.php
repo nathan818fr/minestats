@@ -48,9 +48,13 @@ class ServerController extends Controller
         $this->validateOnly($req, [
             'with'               => 'array|filled|in:icon,versions,languages',
             'order'              => 'order_in:id,players',
-            'languages'          => 'array|filled|in:'.$this->languagesList(),
+            'languages'          => function () {
+                return 'array|filled|in:'.$this->languagesList();
+            },
             'secondaryLanguages' => 'boolean',
-            'versions'           => 'array|filled|in:'.$this->versionsList(),
+            'versions'           => function () {
+                return 'array|filled|in:'.$this->versionsList();
+            },
         ]);
 
         $with = $req->get('with');
