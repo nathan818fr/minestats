@@ -18,6 +18,7 @@ use MinecraftPinger\MinecraftPingException;
  * @property Carbon updated_at
  * @property Carbon icon_updated_at
  * @property Carbon versions_updated_at
+ * @property int    failed_ping_count
  */
 class Server extends Model
 {
@@ -32,6 +33,7 @@ class Server extends Model
         'updated_at',
         'icon_updated_at',
         'versions_updated_at',
+        'failed_ping_count',
     ];
 
     /*
@@ -57,7 +59,7 @@ class Server extends Model
     {
         $array = parent::toArray();
         if (isset($array['icon']) && !empty($array['icon'])) {
-            $array['icon'] = 'data:image/png;base64,' . base64_encode($array['icon']);
+            $array['icon'] = 'data:image/png;base64,'.base64_encode($array['icon']);
         }
 
         return $array;
@@ -119,7 +121,8 @@ class Server extends Model
             $updateIcon = false;
             $checkVersions = false;
         } else {
-            $onlinePlayers = isset($pingResponse->players->online) ? $pingResponse->players->online : 0;
+            $onlinePlayers = (isset($pingResponse->players->online) && $pingResponse->players->online >= 0) ?
+                $pingResponse->players->online : 0;
         }
 
         // Favicon
@@ -160,7 +163,15 @@ class Server extends Model
             $now = Carbon::now();
 
             // Update basic info
-            $this->players = $onlinePlayers;
+            if ($onlinePlayers == -1) {
+                $this->failed_ping_count++;
+                if ($this->failed_ping_count >= 3) { // TODO(nathan818): Config value
+                    $this->players = $onlinePlayers;
+                }
+            } else {
+                $this->failed_ping_count = 0;
+                $this->players = $onlinePlayers;
+            }
             if ($favicon !== null) {
                 $this->icon = $favicon;
             }

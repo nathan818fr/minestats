@@ -103,7 +103,7 @@ ServersRealtimeGraphs.prototype = {
                     var server = this._vueServersList.servers[i];
 
                     if (server.id == serverId) {
-                        this._vueServersList.$set(server, 'playersProgress', data[data.length - 1].y - data[0].y);
+                        this.updateServerProgress(server, data);
                         break;
                     }
                 }
@@ -304,14 +304,41 @@ ServersRealtimeGraphs.prototype = {
                     for (var i in this._vueServersList.servers) {
                         var server = this._vueServersList.servers[i];
                         if (server.id == serverId) {
-                            server.players = data[data.length - 1].y;
-                            this._vueServersList.$set(server, 'playersProgress', data[data.length - 1].y - data[0].y);
+                            var playersCount = data[data.length - 1].y;
+                            if (playersCount == -1) {
+                                server.failed_ping_count++;
+                                if (server.failed_ping_count >= 3) { // TODO(nathan818): Config value (same than Server)
+                                    server.players = playersCount;
+                                }
+                            } else {
+                                server.failed_ping_count = 0;
+                                server.players = playersCount;
+                            }
+                            this.updateServerProgress(server, data);
                             break;
                         }
                     }
                 }
             }
         }
+    },
+
+    updateServerProgress: function (server, data) {
+        if (data.length < 2)
+            return;
+        var i = 0;
+        var min = -1;
+        while (min < 0 && i < data.length && i < 10) {
+            min = data[i].y;
+            i++;
+        }
+        i = 0;
+        var max = -1;
+        while (max < 0 && i < data.length && i < 10) {
+            max = data[data.length - 1 - i].y;
+            i++;
+        }
+        this._vueServersList.$set(server, 'playersProgress', max - min);
     }
 };
 
