@@ -17,4 +17,14 @@ return [
      */
     'versions_cache_period' => 60,
 
+    /*
+     * Client realtime ping update interval in milliseconds
+     */
+    'ui_update_interval'    => 5500,
+
+    /*
+     * Client realtime graph period
+     */
+    'ui_realtime_period'    => 5 * 60,
+
 ];

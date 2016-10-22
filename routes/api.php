@@ -14,3 +14,4 @@ use Illuminate\Http\Request;
 */
 
 Route::get('servers', 'Api\ServerController@getServers');
+Route::get('servers/stats/realtime', 'Api\ServerController@getRealtimeServersStats');

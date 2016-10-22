@@ -2,11 +2,13 @@
 
 namespace MineStats\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use MineStats\Http\Controllers\Controller;
 use MineStats\Models\Language;
 use MineStats\Models\Server;
+use MineStats\Models\ServerStat;
 use MineStats\Models\Version;
 use MineStats\Repositories\TypeRepository;
 
@@ -114,5 +116,37 @@ class ServerController extends Controller
         }
 
         return response()->json($servers);
+    }
+
+    public function getRealtimeServersStats(Request $req)
+    {
+        $this->arrayParam($req, 'servers');
+        $this->validateOnly($req, [
+            'servers' => 'required|numeric_array|filled',
+            'max_id'  => 'integer',
+        ]);
+
+        $servers = $req->get('servers');
+        $maxId = $req->get('max_id');
+        $oldDate = Carbon::now()->subSeconds(config('minestats.ui_realtime_period'));
+
+        $stats = ServerStat::query();
+        if ($maxId !== null) {
+            $stats->where('id', '>', $maxId);
+        }
+        $stats->where('recorded_at', '>=', $oldDate);
+        $stats->whereIn('server_id', $servers);
+        $stats->orderBy('id', 'asc');
+
+        // Return result
+        $stats = $stats->get();
+        if (($statsCount = count($stats)) != 0) {
+            $maxId = $stats[$statsCount - 1]->id;
+        }
+
+        return response()->json([
+            'max_id' => $maxId,
+            'stats'  => $stats
+        ]);
     }
 }
