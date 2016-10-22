@@ -3,33 +3,50 @@ namespace MineStats\Console;
 
 use Illuminate\Console\Command;
 use MineStats\Models\Server;
+use Mockery\Exception\RuntimeException;
 
 class PingTasksCommand extends Command
 {
     protected $signature = 'tasks:ping {duration}';
 
+    protected $pingProcess = []; // process pid by server id
+
     public function handle()
     {
+        declare(ticks = 1);
+        pcntl_signal(SIGCHLD, [$this, 'signalHandler'], false);
+
+        // Set defaults variables
         $startTime = time();
+        $duration = $this->argument('duration') + 0;
+        $interval = config('minestats.ping_interval');
+
+        // Get servers list and disconnect DB (we will make forks, so the db must be disconnected before)
         $servers = Server::all();
         \DB::disconnect();
 
-        $duration = $this->argument('duration') + 0;
-        $interval = config('minestats.ping_interval');
+        // Start supervisor loop
         $runs = 0;
-        $sleep = 1;
+        $waitDelay = 0;
         do {
             if ($runs++ > 0) {
-                sleep($sleep);
+                sleep($waitDelay);
             }
-            $sleep = $this->willRun($interval);
-            if ($sleep === true) {
-                $sleep = 1;
-                if ($this->parallelPing($servers)) {
-                    return;
-                }
+            $waitDelay = $this->willRun($interval);
+            if ($waitDelay === true) {
+                $this->launchPings($servers);
             }
-        } while (time() + $sleep < $startTime + $duration);
+        } while (time() + $waitDelay < $startTime + $duration);
+    }
+
+    protected function signalHandler($signal)
+    {
+        while (($pid = pcntl_wait($status, WNOHANG)) > 0) {
+            $exitCode = pcntl_wexitstatus($status);
+            $serverId = $this->pingProcess[$pid];
+            unset($this->pingProcess[$pid]);
+            $this->info('Process for Server#'.$serverId.' exited with code '.$exitCode);
+        }
     }
 
     protected function willRun($interval)
@@ -61,30 +78,39 @@ class PingTasksCommand extends Command
         return true;
     }
 
-    protected function parallelPing($servers)
+    /*
+     * Run
+     */
+    protected function launchPings($servers)
     {
-        $child = false;
-        $server = null;
         foreach ($servers as $server) {
-            $pid = pcntl_fork();
-            if ($pid !== 0) {
+            if (in_array($server->id, $this->pingProcess)) {
+                $this->comment('Ping already running for '.$server->getNameId().'.');
                 continue;
             }
-            $child = true;
-            break;
-        }
-        if (!$child) {
-            return false;
-        }
-        unset($servers);
+            $pid = pcntl_fork();
+            if ($pid === -1) {
+                throw new RuntimeException('pcntl_fork error');
+            }
+            if ($pid !== 0) {
+                // We are in main process, continue the loop
+                $this->pingProcess[$pid] = $server->id;
+                continue;
+            }
 
-        // Child task
+            // We are in child process, ping the server
+            $this->ping($server);
 
+            return;
+        }
+    }
+
+    protected function ping($server)
+    {
         $this->call('server:ping', [
             '-A'     => true,
             'server' => [$server->id]
         ]);
-
-        return true;
+        exit(0);
     }
 }
