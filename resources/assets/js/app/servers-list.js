@@ -1,131 +1,122 @@
 /*
- * Servers list vue
- */
-const serversList = new Vue({
-    el: '#servers-list',
-
-    data: function () {
-        var data = {
-            servers: [],
-            filters: {
-                show: false,
-                languages: [],
-                versions: [],
-                secondaryLanguages: false,
-                types: []
-            }
-        };
-        var filters = store.get('minestats.serversList.filters');
-        if (filters) {
-            _.assign(data.filters, filters);
-        }
-        return data;
-    },
-
-    watch: {
-        'filters.languages': 'filtersUpdated',
-        'filters.versions': 'filtersUpdated',
-        'filters.secondaryLanguages': 'filtersUpdated',
-        'filters.types': 'filtersUpdated'
-    },
-
-    created: function () {
-        this.fetchServers();
-
-        // Full reload every 5 minutes
-        this.fetchServersTimer = setInterval(function () {
-            this.fetchServers();
-        }.bind(this), 5 * 60 * 1000);
-    },
-
-    mounted: function () {
-        var self = this;
-        // TODO(nathan818): Move multi-selects build in mixin
-        // TODO(nathan818): i18n for texts
-        $('select[name=languages]', this.$el).multiselect({
-            nonSelectedText: 'All',
-            allSelectedText: 'All',
-            selectAllNumber: false,
-            enableHTML: true,
-            onChange: function () {
-                self.filters.languages = this.$select.val();
-            }
-        });
-        $('select[name=versions]', this.$el).multiselect({
-            nonSelectedText: 'All',
-            allSelectedText: 'All',
-            selectAllNumber: false,
-            onChange: function () {
-                self.filters.versions = this.$select.val();
-            }
-        });
-        $('select[name=types]', this.$el).multiselect({
-            nonSelectedText: 'All',
-            allSelectedText: 'All',
-            selectAllNumber: false,
-            onChange: function () {
-                self.filters.types = this.$select.val();
-            }
-        });
-    },
-
-    updated: function () {
-        serversRealtimeGraph.updateServers();
-        serversRealtimeGraph.reflowContainers();
-    },
-
-    beforeDestroy: function () {
-        clearInterval(this.fetchServersTimer);
-    },
-
-    methods: {
-        fetchServers: function () {
-            var options = {
-                with: 'icon,versions,languages',
-                secondaryLanguages: this.filters.secondaryLanguages ? '1' : '0'
-            };
-            if (this.filters.languages.length)
-                options.languages = this.filters.languages.join(',');
-            if (this.filters.versions.length)
-                options.versions = this.filters.versions.join(',');
-            if (this.filters.types.length)
-                options.types = this.filters.types.join(',');
-            this.$http.get('/api/servers?' + $.param(options)).then(function (servers) {
-                this.servers = servers.body;
-                serversRealtimeGraph.updateData();
-            });
-        },
-        filtersUpdated: _.debounce(function () {
-            this.saveFilters();
-            this.fetchServers();
-        }, 1000),
-        saveFilters: function () {
-            store.set('minestats.serversList.filters', {
-                show: this.filters.show,
-                languages: this.filters.languages,
-                versions: this.filters.versions,
-                secondaryLanguages: this.filters.secondaryLanguages,
-                types: this.filters.types
-            });
-        }
-    },
-
-    computed: {
-        orderedServers: function () {
-            return _.sortBy(this.servers, function (server) {
-                return -server.players;
-            });
-        }
-    }
-});
-
-/*
  * Per-servers realtime graph manager
  */
-var serversRealtimeGraph = function () {
-    var graphs = {};
+const ServersRealtimeGraphs = function (vueServersList) {
+    this.init(vueServersList);
+};
 
-    var createGraph = function (server) {
+ServersRealtimeGraphs.prototype = {
+    /**
+     * Initialize realtime graphs. Called on construct.
+     *
+     * @param vueServersList the servers list vue
+     */
+    init: function (vueServersList) {
+        this._vueServersList = vueServersList;
+        this._graphs = {};
+        this._pingMaxId = null;
+        this._pingTask = null;
+
+        // Bind events
+        $(window).resize(this._onWindowResize = _.debounce(function () {
+            serversRealtimeGraph.reflowContainers();
+        }, 200, {maxWait: 1000}));
+    },
+
+    /**
+     * Reflow containers (when window size change, ...)
+     */
+    reflowContainers: function () {
+        // TODO(nathan818): Config to enable/disable this "same-size" graphs option
+        var graph;
+        var width;
+        var minWidth = null;
+
+        for (var i in this._graphs) {
+            graph = this._graphs[i];
+            width = $(graph.container).parent().parent().width();
+            if (minWidth === null || width < minWidth) {
+                minWidth = width;
+            }
+        }
+        for (var i in this._graphs) {
+            graph = this._graphs[i];
+            var container = $(graph.container).parent();
+            width = container.parent().width();
+            container.width(minWidth + 'px');
+            graph.reflow();
+        }
+    },
+
+    /**
+     * Check for servers update after a vue DOM update
+     */
+    updateServers: function () {
+        var hasNew = false;
+        var serverIds = [];
+
+        // Create new graphs
+        this._vueServersList.servers.forEach(function (server) {
+            serverIds.push(server.id);
+            if (!this._graphs[server.id]) {
+                hasNew = true;
+                this._graphs[server.id] = this.createGraph(server);
+            }
+        }.bind(this));
+
+        // Remove old graphs
+        for (var serverId in this._graphs) {
+            if (serverIds.indexOf(parseInt(serverId)) == -1) {
+                this.destroyGraph(this._graphs[serverId]);
+                delete this._graphs[serverId];
+            }
+        }
+
+        // Ping (if needed)
+        if (hasNew)
+            this.ping(); // TODO(nathan818): "Debounce?"
+    },
+
+    /**
+     * Update the servers data after a vue servers fetch.
+     */
+    updateData: function () {
+        for (var serverId in this._graphs) {
+            var graph = this._graphs[serverId];
+
+            var data = graph.series[0].data;
+            if (data.length > 0) {
+                for (var i in this._vueServersList.servers) {
+                    var server = this._vueServersList.servers[i];
+
+                    if (server.id == serverId) {
+                        this._vueServersList.$set(server, 'playersProgress', data[data.length - 1].y - data[0].y);
+                        break;
+                    }
+                }
+            }
+        }
+    },
+
+    /**
+     * Destroy graphs, unbind events, ...
+     */
+    destroy: function () {
+        // Unbind events
+        $(window).unbind('resize', this._onWindowResize);
+
+        this.stopPingTask();
+        // TODO: Destroy graphs
+    },
+
+    // - Private part
+
+    /**
+     * Create a new graph for a server
+     * @param server the vue server data
+     * @returns the graph
+     */
+    createGraph: function (server) {
         var graph = new Highcharts.Chart({
             chart: {
                 renderTo: $('#server-' + server.id).find('.graph-container')[0],
@@ -182,55 +173,85 @@ var serversRealtimeGraph = function () {
         });
         graph.serverId = server.id;
         graph.firstFilled = false;
+        graph.serieUpdated = 0;
         return graph;
-    };
+    },
 
-    var destroyGraph = function (graph) {
+    /**
+     * Destroy specified graph.
+     * (It is not removed from the list of graphs !)
+     *
+     * @param graph the graph
+     */
+    destroyGraph: function (graph) {
         graph.destroy();
-    };
-
-    var pingMaxId = null;
-    var pingTask = null;
-    var ping = function () {
-        if (pingTask !== null) {
-            clearTimeout(pingTask);
-            pingTask = null;
+        for (var serverId in this._graphs) {
+            destroyGraph(this._graphs[serverId]);
+            delete graphs[serverId];
         }
+    },
 
+    /**
+     * Ping the servers (and schedule the next ping if needed)
+     */
+    ping: function () {
+        this.stopPingTask(); // Cancel already scheduled ping task
+
+        // List servers-id to ping
         var servers = [];
-        for (var serverId in graphs) {
-            var graph = graphs[serverId];
-            if (pingMaxId !== null) {
+        for (var serverId in this._graphs) {
+            var graph = this._graphs[serverId];
+            if (this._pingMaxId !== null) {
                 // TODO(nathan818): first-fill list?
             }
             servers.push(serverId);
         }
 
-        console.log('ping');
+        // HTTP request
         var always = function () {
-            pingTask = setTimeout(ping, 5500);  // TODO(nathan818): Use value from config
-        };
+            this._pingTask = setTimeout(function () {
+                this.ping();
+            }.bind(this), 5500);  // TODO(nathan818): Use value from config
+        }.bind(this);
+
         var params = {
             servers: servers.join(',')
         };
-        if (pingMaxId !== null)
-            params.max_id = pingMaxId;
-        serversList.$http.get('/api/servers/stats/realtime?' + $.param(params)).then(function (res) {
+        if (this._pingMaxId !== null)
+            params.max_id = this._pingMaxId;
+        this._vueServersList.$http.get('/api/servers/stats/realtime?' + $.param(params)).then(function (res) {
             always();
 
             var data = res.body;
-            pingMaxId = data.max_id;
-            updateStats(data.stats);
-        }, function () {
+            this._pingMaxId = data.max_id;
+            this.updateStats(data.min_date, data.stats);
+        }.bind(this), function () {
             always();
             // TODO(nathan818): Notify error
-        });
-    };
+        }.bind(this));
+    },
 
-    var updateStats = function (stats) {
+    /**
+     * Cancel the programmed ping task (if there is one).
+     */
+    stopPingTask: function () {
+        if (this._pingTask !== null) {
+            clearTimeout(this._pingTask);
+            this._pingTask = null;
+        }
+    },
+
+    /**
+     * Update graphs from stats list
+     *
+     * @param minDate minimum date
+     * @param stats a stats list
+     */
+    updateStats: function (minDate, stats) {
         // Add new points
+        // var redrawPointsThreshold = 2;
         stats.forEach(function (stat) {
-            var graph = graphs[stat.server_id];
+            var graph = this._graphs[stat.server_id];
             if (!graph) {
                 console.error('Received ping info for unknown server:' + stat.server_id);
             } else {
@@ -238,101 +259,162 @@ var serversRealtimeGraph = function () {
                     x: moment.utc(stat.recorded_at).unix() * 1000,
                     y: stat.players
                 }, false);
-                graph.needUpdate = true;
+                graph.serieUpdated = true;
             }
-        });
+        }.bind(this));
+
         // Remove old points & update render
-        var minTime = moment().subtract(5 * 60, 'seconds').unix() * 1000; // TODO(nathan818): Interval from config
-        for (var serverId in graphs) {
-            var graph = graphs[serverId];
-            if (graph.needUpdate) {
-                graph.needUpdate = false;
+        var minX = moment.utc(minDate).unix() * 1000; // TODO(nathan818): Interval from config
+        for (var serverId in this._graphs) {
+            var graph = this._graphs[serverId];
+
+            if (graph.serieUpdated) {
+                graph.serieUpdated = false;
                 var data = graph.series[0].data;
-                // Remove old points
-                while (data.length > 0 && data[0].y < minTime) {
-                    data.shift();
-                }
-                // Update render
+
+                // Redraw for addPoint
+                // We must redraw before removing points to avoid errors with Highchart in console
                 graph.redraw();
+
+                // Remove old points
+                while (data.length > 0 && data[0].x < minX) {
+                    graph.series[0].removePoint(0, false);
+                }
+
+                // Update vue
                 if (data.length > 0) {
-                    for (var i in serversList.servers) {
-                        var server = serversList.servers[i];
+                    for (var i in this._vueServersList.servers) {
+                        var server = this._vueServersList.servers[i];
                         if (server.id == serverId) {
                             server.players = data[data.length - 1].y;
-                            serversList.$set(server, 'playersProgress', data[data.length - 1].y - data[0].y);
+                            this._vueServersList.$set(server, 'playersProgress', data[data.length - 1].y - data[0].y);
                             break;
                         }
                     }
                 }
             }
         }
-    };
+    }
+};
 
-    return {
-        updateServers: function () {
-            var hasNew = false;
-            var serverIds = [];
+/*
+ * Servers list vue
+ */
+const serversList = new Vue({
+    el: '#servers-list',
 
-            // Create new graphs
-            serversList.servers.forEach(function (server) {
-                serverIds.push(server.id);
-                if (!graphs[server.id]) {
-                    hasNew = true;
-                    graphs[server.id] = createGraph(server);
-                }
+    data: function () {
+        var data = {
+            servers: [],
+            filters: {
+                show: false,
+                languages: [],
+                versions: [],
+                secondaryLanguages: false,
+                types: []
+            }
+        };
+        var filters = store.get('minestats.serversList.filters');
+        if (filters) {
+            _.assign(data.filters, filters);
+        }
+        return data;
+    },
+
+    watch: {
+        'filters.languages': 'filtersUpdated',
+        'filters.versions': 'filtersUpdated',
+        'filters.secondaryLanguages': 'filtersUpdated',
+        'filters.types': 'filtersUpdated'
+    },
+
+    created: function () {
+        this.serversRealtimeGraphs = new ServersRealtimeGraphs(this);
+        this.fetchServers();
+        // Full reload every 5 minutes
+        this.fetchServersTimer = setInterval(function () {
+            this.fetchServers();
+        }.bind(this), 5 * 60 * 1000);
+    },
+
+    mounted: function () {
+        var self = this;
+        // TODO(nathan818): Move multi-selects build in mixin
+        // TODO(nathan818): i18n for texts
+        $('select[name=languages]', this.$el).multiselect({
+            nonSelectedText: 'All',
+            allSelectedText: 'All',
+            selectAllNumber: false,
+            enableHTML: true,
+            onChange: function () {
+                self.filters.languages = this.$select.val();
+            }
+        });
+        $('select[name=versions]', this.$el).multiselect({
+            nonSelectedText: 'All',
+            allSelectedText: 'All',
+            selectAllNumber: false,
+            onChange: function () {
+                self.filters.versions = this.$select.val();
+            }
+        });
+        $('select[name=types]', this.$el).multiselect({
+            nonSelectedText: 'All',
+            allSelectedText: 'All',
+            selectAllNumber: false,
+            onChange: function () {
+                self.filters.types = this.$select.val();
+            }
+        });
+    },
+
+    updated: function () {
+        this.serversRealtimeGraphs.updateServers();
+        this.serversRealtimeGraphs.reflowContainers();
+    },
+
+    beforeDestroy: function () {
+        this.serversRealtimeGraphs.destroy();
+        clearInterval(this.fetchServersTimer);
+    },
+
+    methods: {
+        fetchServers: function () {
+            var options = {
+                with: 'icon,versions,languages',
+                secondaryLanguages: this.filters.secondaryLanguages ? '1' : '0'
+            };
+            if (this.filters.languages.length)
+                options.languages = this.filters.languages.join(',');
+            if (this.filters.versions.length)
+                options.versions = this.filters.versions.join(',');
+            if (this.filters.types.length)
+                options.types = this.filters.types.join(',');
+            this.$http.get('/api/servers?' + $.param(options)).then(function (servers) {
+                this.servers = servers.body;
+                this.serversRealtimeGraphs.updateData();
             });
-
-            // Remove old graphs
-            for (var serverId in graphs) {
-                if (serverIds.indexOf(parseInt(serverId)) == -1) {
-                    destroyGraph(graphs[serverId]);
-                    delete graphs[serverId];
-                }
-            }
-
-            if (hasNew)
-                ping(); // TODO: "Debounce?"
         },
-
-        updateData: function () {
-            for (var serverId in graphs) {
-                var graph = graphs[serverId];
-                var data = graph.series[0].data;
-                if (data.length > 0) {
-                    for (var i in serversList.servers) {
-                        var server = serversList.servers[i];
-                        if (server.id == serverId) {
-                            serversList.$set(server, 'playersProgress', data[data.length - 1].y - data[0].y);
-                            break;
-                        }
-                    }
-                }
-            }
-        },
-
-        reflowContainers: function () {
-            // TODO(nathan818): Config to enable/disable this "same-size" graphs option
-            var graph;
-            var width;
-            var minWidth = null;
-            for (var i in graphs) {
-                graph = graphs[i];
-                width = $(graph.container).parent().parent().width();
-                if (minWidth === null || width < minWidth) {
-                    minWidth = width;
-                }
-            }
-            for (var i in graphs) {
-                graph = graphs[i];
-                var container = $(graph.container).parent();
-                width = container.parent().width();
-                container.width(minWidth + 'px');
-                graph.reflow();
-            }
+        filtersUpdated: _.debounce(function () {
+            this.saveFilters();
+            this.fetchServers();
+        }, 1000),
+        saveFilters: function () {
+            store.set('minestats.serversList.filters', {
+                show: this.filters.show,
+                languages: this.filters.languages,
+                versions: this.filters.versions,
+                secondaryLanguages: this.filters.secondaryLanguages,
+                types: this.filters.types
+            });
         }
-    };
-}();
+    },
 
-$(window).resize(_.debounce(function () {
-    serversRealtimeGraph.reflowContainers();
-}, 200, {maxWait: 1000}));
+    computed: {
+        orderedServers: function () {
+            return _.sortBy(this.servers, function (server) {
+                return -server.players;
+            });
+        }
+    }
+});

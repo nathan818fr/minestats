@@ -145,8 +145,9 @@ class ServerController extends Controller
         }
 
         return response()->json([
-            'max_id' => $maxId,
-            'stats'  => $stats
+            'max_id'   => $maxId,
+            'min_date' => $oldDate->toDateTimeString(),
+            'stats'    => $stats
         ]);
     }
 }
