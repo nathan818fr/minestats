@@ -95,7 +95,7 @@
                             <div class="status status-players" v-if="server.players >= 0">
                                 @lang('server.players')@lang('punctuation.colon') @{{ server.players | number-count }}
                                 <span v-if="server.playersProgress !== undefined" class="progression">
-                                    (@{{ server.playersProgress | number-count }})
+                                    (@{{ server.playersProgress > 0 ? '+' : '' }}@{{ server.playersProgress | number-count }})
                                 </span>
                             </div>
                             <div class="status status-down" v-else>
