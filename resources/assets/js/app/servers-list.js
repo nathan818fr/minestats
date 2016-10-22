@@ -1,4 +1,17 @@
 /*
+ * All servers graph manager
+ */
+const AllServersGraph = function (vueServersList) {
+    this.init(vueServersList);
+};
+
+AllServersGraph.prototype = {
+    init: function (vueServersList) {
+        this._vueServersList = vueServersList;
+    }
+};
+
+/*
  * Per-servers realtime graph manager
  */
 const ServersRealtimeGraphs = function (vueServersList) {
@@ -19,8 +32,8 @@ ServersRealtimeGraphs.prototype = {
 
         // Bind events
         $(window).resize(this._onWindowResize = _.debounce(function () {
-            serversRealtimeGraph.reflowContainers();
-        }, 200, {maxWait: 1000}));
+            this.reflowContainers();
+        }.bind(this), 200, {maxWait: 1000}));
     },
 
     /**
