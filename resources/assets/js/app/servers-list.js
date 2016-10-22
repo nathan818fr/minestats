@@ -142,7 +142,12 @@ ServersRealtimeGraphs.prototype = {
             title: null,
             xAxis: {
                 type: 'datetime',
-                tickPixelInterval: 100
+                tickPixelInterval: 100,
+                labels: {
+                    formatter: function () {
+                        return moment(this.value).format('LT');
+                    }
+                }
             },
             yAxis: {
                 title: {
