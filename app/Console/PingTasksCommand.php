@@ -25,7 +25,9 @@ class PingTasksCommand extends Command
             $sleep = $this->willRun($interval);
             if ($sleep === true) {
                 $sleep = 1;
-                $this->parallelPing($servers);
+                if ($this->parallelPing($servers)) {
+                    return;
+                }
             }
         } while (time() + $sleep < $startTime + $duration);
     }
@@ -72,7 +74,7 @@ class PingTasksCommand extends Command
             break;
         }
         if (!$child) {
-            return;
+            return false;
         }
         unset($servers);
 
@@ -83,6 +85,6 @@ class PingTasksCommand extends Command
             'server' => [$server->id]
         ]);
 
-        exit();
+        return true;
     }
 }
