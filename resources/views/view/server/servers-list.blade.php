@@ -4,6 +4,9 @@
 @section('content')
     <div class="container content-margin-top">
         <div id="servers-list" class="clearfix" v-cloak>
+            <div class="global-graph">
+                <div class="graph-container"></div>
+            </div>
             <div class="filters">
                 <div class="filters-head">
                     <a href="javascript:;" v-on:click="filters.show = !filters.show; saveFilters()">
@@ -95,14 +98,17 @@
                             <div class="status status-players" v-if="server.players >= 0">
                                 @lang('server.players')@lang('punctuation.colon') @{{ server.players | number-count }}
                                 <span v-if="server.playersProgress !== undefined" class="progression">
-                                    (@{{ server.playersProgress > 0 ? '+' : '' }}@{{ server.playersProgress | number-count }})
+                                    (@{{ server.playersProgress > 0 ?
+                                      '+' : '' }}@{{ server.playersProgress | number-count }})
                                 </span>
                             </div>
                             <div class="status status-down" v-else>
                                 @lang('server.down')
                             </div>
                         </div>
-                        <div class="graph"><div class="graph-container"></div></div>
+                        <div class="graph">
+                            <div class="graph-container"></div>
+                        </div>
                     </div>
                 </div>
             </div>
