@@ -356,11 +356,18 @@ const serversList = new Vue({
                 versions: [],
                 secondaryLanguages: false,
                 types: []
+            },
+            options: {
+                expanded: false
             }
         };
         var filters = store.get('minestats.serversList.filters');
         if (filters) {
             _.assign(data.filters, filters);
+        }
+        var options = store.get('minestats.serversList.options');
+        if (options) {
+            _.assign(data.options, options);
         }
         return data;
     },
@@ -451,6 +458,10 @@ const serversList = new Vue({
                 secondaryLanguages: this.filters.secondaryLanguages,
                 types: this.filters.types
             });
+        },
+        toggleExpandedOption: function () {
+            this.options.expanded = !this.options.expanded;
+            store.set('minestats.serversList.options', this.options);
         }
     },
 

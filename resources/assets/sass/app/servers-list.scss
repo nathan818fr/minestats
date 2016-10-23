@@ -36,19 +36,6 @@
     .case {
       float: left;
       padding: 0 4px;
-
-      @media (max-width: $screen-xs-max) {
-        width: 100%;
-      }
-      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-        width: (100% / 2);
-      }
-      @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
-        width: (100% / 2);
-      }
-      @media (min-width: $screen-lg-min) {
-        width: (100% / 2);
-      }
     }
 
     .server {
@@ -142,6 +129,30 @@
           right: 0;
           width: 100%;
           height: 100%;
+        }
+      }
+    }
+  }
+
+  .list {
+    .case {
+      float: left;
+      padding: 0 4px;
+
+      @media (max-width: 999px) {
+        width: 100%;
+      }
+      @media (min-width: 1000px) {
+        width: (100% / 2);
+      }
+    }
+  }
+
+  .container-expanded {
+    .list {
+      .case {
+        @media (min-width: 1700px) {
+          width: (100% / 3);
         }
       }
     }
