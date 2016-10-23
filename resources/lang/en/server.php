@@ -17,7 +17,7 @@ return [
     'server_languages'   => 'Languages',
     'main_language'      => 'Main',
     'secondary_language' => 'Secondary',
-    'not_language' => 'Not available',
+    'not_language'       => 'Not available',
 
     'players' => 'Players',
     'down'    => 'Down',
@@ -26,6 +26,9 @@ return [
         'de' => 'German',
         'en' => 'English',
         'fr' => 'French',
+        'es' => 'Spain',
+        'nl' => 'Dutch',
+        'cn' => 'Chinese',
     ],
 
     'filters' => [

@@ -4,10 +4,18 @@ use Illuminate\Database\Seeder;
 
 class LanguagesSeeder extends Seeder
 {
+    /*
+     * I know very well that the flags do not represent languages! But we need a simple and small way to display the
+     * languages of servers and a flag is the best solution I have.
+     */
+
     private $languages = [
         'de', // German
         'en', // English
         'fr', // French
+        'es', // Spain
+        'nl', // Dutch
+        'cn', // Chinese
     ];
 
     /**

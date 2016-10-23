@@ -81,6 +81,15 @@
             font-size: 14px;
             color: #999;
           }
+
+          .languages {
+            display: inline-block;
+            max-width: 50px;
+            overflow: visible;
+            white-space: nowrap;
+            z-index: 1;
+            position: relative;
+          }
         }
 
         .address {

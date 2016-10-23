@@ -109,10 +109,12 @@
                                 <h3>
                                     @{{ server.name }}
                                     <span :class="['type', 'type-' + server.type.toLowerCase()]">@{{ server.type.toLowerCase() }}</span>
-                                    <template v-for="language in server.languages"
-                                              v-if="filters.secondaryLanguages || language.main">
-                                        <span :class="['language', 'language-main', 'flag', 'flag-' + language.id]"></span>@{{ ' ' }}
-                                    </template>
+                                    <span class="languages">
+                                        <template v-for="language in server.languages"
+                                                  v-if="filters.secondaryLanguages || language.main">
+                                            <span :class="['language', 'language-main', 'flag', 'flag-' + language.id]"></span>@{{ ' ' }}
+                                        </template>
+                                    </span>
                                 </h3>
                                 <div class="address">@{{ server.ip + (server.port ? ':' + server.port : '') }}</div>
                                 <ul class="versions">
