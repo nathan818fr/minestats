@@ -124,13 +124,18 @@ class ServerController extends Controller
         $this->arrayParam($req, 'servers');
         $this->arrayParam($req, 'new_servers');
         $this->validateOnly($req, [
-            'servers'     => 'required|numeric_array|filled',
-            'new_servers' => 'numeric_array|filled',
+            'servers'     => 'numeric_array',
+            'new_servers' => 'numeric_array',
             'max_id'      => 'integer',
         ]);
 
         $servers = $req->get('servers');
         $newServers = $req->get('new_servers');
+
+        if (empty($servers) && empty($newServers)) {
+            throw new BadRequestHttpException('At least on of servers or new_servers must be provided!');
+        }
+
         $maxId = $req->get('max_id');
         $oldDate = Carbon::now()->subSeconds(config('minestats.ui_realtime_period'));
 
@@ -145,12 +150,14 @@ class ServerController extends Controller
                     $q->whereIn('server_id', $newServers);
                 });
             }
-            $grp->orWhere(function (Builder $q) use ($maxId, $oldDate, $servers) {
-                if ($maxId !== null) {
-                    $q->where('id', '>', $maxId);
-                }
-                $q->whereIn('server_id', $servers);
-            });
+            if (!empty($servers)) {
+                $grp->orWhere(function (Builder $q) use ($maxId, $oldDate, $servers) {
+                    if ($maxId !== null) {
+                        $q->where('id', '>', $maxId);
+                    }
+                    $q->whereIn('server_id', $servers);
+                });
+            }
         });
         $stats->where('recorded_at', '>=', $oldDate);
         $stats->orderBy('id', 'asc');

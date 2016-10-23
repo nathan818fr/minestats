@@ -167,3 +167,18 @@
     }
   }
 }
+
+@media (max-width: 480px) {
+  #servers-list {
+    .list {
+      .server {
+        flex-wrap: wrap;
+
+        .graph {
+          height: 90px;
+          flex-basis: 100%;
+        }
+      }
+    }
+  }
+}
