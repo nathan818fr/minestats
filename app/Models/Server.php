@@ -203,7 +203,7 @@ class Server extends Model
             }
 
             // Update stats entries
-            if ($this->failed_ping_count > 1) {
+            if ($onlinePlayers != -1 || $this->failed_ping_count > 1) {
                 $statEntry = new ServerStat([
                     'recorded_at' => $now,
                     'players'     => $onlinePlayers,
