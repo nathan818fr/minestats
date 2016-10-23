@@ -52,12 +52,12 @@
         </div>
         <div class="form-group">
             <div class="{{ $col1Off }} {{ $col2 }}">
-                {!! Form::submit(trans($user !== null ? 'form.edit' : 'form.create'), ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('usersList') }}" class="btn btn-default">@lang('form.cancel')</a>
+                {!! Form::submit(trans($user !== null ? 'general.edit' : 'general.create'), ['class' => 'btn btn-primary']) !!}
+                <a href="{{ route('usersList') }}" class="btn btn-default">@lang('general.cancel')</a>
                 @if ($user !== null)
                     @can('delete', $user)
                         <div class="pull-right">
-                            {!! Form::submit(trans('form.delete'), ['class' => 'btn btn-danger confirm-submit', 'name' => 'delete']) !!}
+                            {!! Form::submit(trans('general.delete'), ['class' => 'btn btn-danger confirm-submit', 'name' => 'delete']) !!}
                         </div>
                     @endcan
                 @endif

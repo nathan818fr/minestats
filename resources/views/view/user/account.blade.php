@@ -47,7 +47,7 @@
         </div>
         <div class="form-group">
             <div class="{{ $col1Off }} {{ $col2 }}">
-                {!! Form::submit(trans('form.update'), ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit(trans('general.update'), ['class' => 'btn btn-primary']) !!}
             </div>
         </div>
         {!! Form::close() !!}

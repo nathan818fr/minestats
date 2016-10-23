@@ -36,7 +36,7 @@ if (!isset($title)) {
                         $backUrl = $prevButton;
                     }
                     ?>
-                    <a href="{{ $backUrl }}" class="btn btn-default" title="@lang('form.back')">
+                    <a href="{{ $backUrl }}" class="btn btn-default" title="@lang('general.back')">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 @endif

@@ -84,12 +84,12 @@
         </div>
         <div class="form-group">
             <div class="{{ $col1Off }} {{ $col2 }}">
-                {!! Form::submit(trans($server !== null ? 'form.edit' : 'form.create'), ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('serversList') }}" class="btn btn-default">@lang('form.cancel')</a>
+                {!! Form::submit(trans($server !== null ? 'general.edit' : 'general.create'), ['class' => 'btn btn-primary']) !!}
+                <a href="{{ route('serversList') }}" class="btn btn-default">@lang('general.cancel')</a>
                 @if ($server !== null)
                     @can('delete', \MineStats\Models\Server::class)
                         <div class="pull-right">
-                            {!! Form::submit(trans('form.delete'), ['class' => 'btn btn-danger confirm-submit', 'name' => 'delete']) !!}
+                            {!! Form::submit(trans('general.delete'), ['class' => 'btn btn-danger confirm-submit', 'name' => 'delete']) !!}
                         </div>
                     @endcan
                 @endif

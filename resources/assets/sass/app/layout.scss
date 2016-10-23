@@ -1,5 +1,16 @@
+html {
+  height: 100%;
+}
+
 body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+#site {
   margin-top: 50px;
+  flex: 1;
 }
 
 #header {
@@ -53,5 +64,32 @@ body {
 
   .actions {
 
+  }
+}
+
+.content-margin-top {
+  margin-top: 15px;
+}
+
+.container-expanded {
+  width: 100%;
+}
+
+.alert-container {
+  .alert:first-child {
+    margin-top: 18px;
+  }
+}
+
+footer {
+  background: #343535;
+  color: #FFF;
+  text-align: center;
+  margin-top: 20px;
+  padding: 14px 8px;
+
+  a, a:hover {
+    color: #FFF;
+    text-decoration: underline;
   }
 }

@@ -40,7 +40,7 @@
                         @can('update', $user)
                             <a href="{{ route('userEdit', ['userId' => $user->id]) }}" class="btn btn-default btn-xs">
                                 <i class="fa fa-edit"></i>
-                                @lang('form.edit')
+                                @lang('general.edit')
                             </a>
                         @endcan
                     </td>
