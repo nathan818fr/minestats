@@ -3,7 +3,7 @@
 namespace MineStats\Http\Controllers\Api;
 
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use MineStats\Http\Controllers\Controller;
 use MineStats\Models\Language;
@@ -11,6 +11,7 @@ use MineStats\Models\Server;
 use MineStats\Models\ServerStat;
 use MineStats\Models\Version;
 use MineStats\Repositories\TypeRepository;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ServerController extends Controller
 {
@@ -121,21 +122,37 @@ class ServerController extends Controller
     public function getRealtimeServersStats(Request $req)
     {
         $this->arrayParam($req, 'servers');
+        $this->arrayParam($req, 'new_servers');
         $this->validateOnly($req, [
-            'servers' => 'required|numeric_array|filled',
-            'max_id'  => 'integer',
+            'servers'     => 'required|numeric_array|filled',
+            'new_servers' => 'numeric_array|filled',
+            'max_id'      => 'integer',
         ]);
 
         $servers = $req->get('servers');
+        $newServers = $req->get('new_servers');
         $maxId = $req->get('max_id');
         $oldDate = Carbon::now()->subSeconds(config('minestats.ui_realtime_period'));
 
-        $stats = ServerStat::query();
-        if ($maxId !== null) {
-            $stats->where('id', '>', $maxId);
+        if ($maxId === null && !empty($newServers)) {
+            throw new BadRequestHttpException('new_servers present without max_id!');
         }
+
+        $stats = ServerStat::query();
+        $stats->where(function (Builder $grp) use ($stats, $maxId, $oldDate, $servers, $newServers) {
+            if (!empty($newServers)) {
+                $grp->where(function (Builder $q) use ($oldDate, $newServers) {
+                    $q->whereIn('server_id', $newServers);
+                });
+            }
+            $grp->orWhere(function (Builder $q) use ($maxId, $oldDate, $servers) {
+                if ($maxId !== null) {
+                    $q->where('id', '>', $maxId);
+                }
+                $q->whereIn('server_id', $servers);
+            });
+        });
         $stats->where('recorded_at', '>=', $oldDate);
-        $stats->whereIn('server_id', $servers);
         $stats->orderBy('id', 'asc');
 
         // Return result

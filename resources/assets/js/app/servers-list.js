@@ -195,6 +195,7 @@ ServersRealtimeGraphs.prototype = {
         graph.serverId = server.id;
         graph.firstFilled = false;
         graph.serieUpdated = 0;
+        graph.currentMaxId = 0;
         return graph;
     },
 
@@ -216,12 +217,14 @@ ServersRealtimeGraphs.prototype = {
 
         // List servers-id to ping
         var servers = [];
+        var newServers = [];
         for (var serverId in this._graphs) {
             var graph = this._graphs[serverId];
-            if (this._pingMaxId !== null) {
-                // TODO(nathan818): first-fill list?
+            if (this._pingMaxId !== null && !graph.firstFilled) {
+                newServers.push(serverId);
+            } else {
+                servers.push(serverId);
             }
-            servers.push(serverId);
         }
 
         // HTTP request
@@ -230,15 +233,22 @@ ServersRealtimeGraphs.prototype = {
                 this.ping();
             }.bind(this), 5500);  // TODO(nathan818): Use value from config
         }.bind(this);
+        var markFirstFill = function (serverId) {
+            this._graphs[serverId].firstFilled = true;
+        }.bind(this);
 
         var params = {
             servers: servers.join(',')
         };
+        if (newServers.length)
+            params.new_servers = newServers.join(',');
         if (this._pingMaxId !== null)
             params.max_id = this._pingMaxId;
         this._vueServersList.$http.get('/api/servers/stats/realtime?' + $.param(params)).then(function (res) {
             always();
 
+            servers.forEach(markFirstFill);
+            newServers.forEach(markFirstFill);
             var data = res.body;
             this._pingMaxId = data.max_id;
             this.updateStats(data.min_date, data.stats);
@@ -271,7 +281,8 @@ ServersRealtimeGraphs.prototype = {
             var graph = this._graphs[stat.server_id];
             if (!graph) {
                 console.error('Received ping info for unknown server:' + stat.server_id);
-            } else {
+            } else if (stat.id > graph.currentMaxId) {
+                graph.currentMaxId = stat.id;
                 graph.series[0].addPoint({
                     x: moment.utc(stat.recorded_at).unix() * 1000,
                     y: stat.players
