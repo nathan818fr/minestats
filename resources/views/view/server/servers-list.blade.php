@@ -7,7 +7,9 @@
                 [
                     'type' => 'custom',
                     'html' => '
-                    <button v-cloak v-on:click="toggleExpandedOption" :class="(options.expanded ? \'active \' : \'\') + \'btn btn-default hidden-xs\'">
+                    <button v-cloak v-on:click="toggleExpandedOption"
+                        :class="(options.expanded ? \'active \' : \'\') + \'btn btn-default hidden-xs\'"
+                        data-toggle="tooltip" title="'.trans('server.options.toggle_expanded_mode').'">
                         <i class="fa fa-arrows-h"></i>
                     </button>
                     '
@@ -118,7 +120,9 @@
                                     <span class="languages">
                                         <template v-for="language in server.languages"
                                                   v-if="filters.secondaryLanguages || language.main">
-                                            <span :class="['language', 'language-main', 'flag', 'flag-' + language.id]"></span>@{{ ' ' }}
+                                            {{-- TODO(nathan818): vuejs i18n --}}
+                                            <span :class="['language', 'language-main', 'flag', 'flag-' + language.id]"
+                                                  :title="language.id"></span>@{{ ' ' }}
                                         </template>
                                     </span>
                                 </h3>

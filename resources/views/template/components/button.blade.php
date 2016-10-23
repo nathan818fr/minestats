@@ -4,6 +4,7 @@ $elem = !empty($action['url']) ? 'a' : 'button';
 ?>
 <{{ $elem }}
         class="btn btn-default"
+        data-toggle="tooltip"
 {!! !empty($action['url']) ? 'href="'.e($action['url']).'"' : '' !!}
 {!! !empty($action['title']) ? 'title="'.e($action['title']).'"' : '' !!}
 >

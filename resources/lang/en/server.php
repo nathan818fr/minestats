@@ -39,4 +39,8 @@ return [
         'types'                       => 'Server Type',
     ],
 
+    'options' => [
+        'toggle_expanded_mode' => 'Toggle expanded mode'
+    ],
+
 ];

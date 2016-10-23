@@ -28,11 +28,21 @@ Number.prototype.format = function (n, x, s, c) {
 /*
  * Forms
  */
+
 $('.confirm-submit').removeClass('confirm-submit').click(function (e) {
     if (confirm('Are-you sure ?') !== true) // TODO(nathan818): i18n
         e.preventDefault();
 });
 
+/*
+ * Utils
+ */
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        container: 'body',
+        trigger: 'hover'
+    });
+});
 
 /*
  * Vue
