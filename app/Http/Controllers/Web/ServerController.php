@@ -15,7 +15,6 @@ class ServerController extends Controller
     {
         $this->middleware('can:create,MineStats\Models\Server')->only(['getServerCreate', 'postServerCreate']);
         $this->middleware('can:update,MineStats\Models\Server')->only(['getServerEdit', 'postServerEdit']);
-        $this->middleware('can:delete,MineStats\Models\Server')->only(['deleteServer']);
     }
 
     public function getServersList()

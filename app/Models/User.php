@@ -17,6 +17,21 @@ class User extends Authenticatable
     const ACL_ADMIN = 2;
     const ACL_USER = 1;
 
+    const ACL_BY_ID = [
+        3 => 'OWNER',
+        2 => 'ADMIN',
+        1 => 'USER',
+    ];
+
+    public static function getAclName($acl)
+    {
+        if (array_key_exists($acl, self::ACL_BY_ID)) {
+            return self::ACL_BY_ID[$acl];
+        }
+
+        return null;
+    }
+
     protected $fillable = [
         'id',
         'username',
@@ -28,5 +43,5 @@ class User extends Authenticatable
     /*
      * Serialization hidden fields
      */
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'remember_token'];
 }

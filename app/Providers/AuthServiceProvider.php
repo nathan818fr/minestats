@@ -14,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'MineStats\Models\Server' => 'MineStats\Policies\ServerPolicy',
+        'MineStats\Models\User'   => 'MineStats\Policies\UserPolicy',
     ];
 
     /**

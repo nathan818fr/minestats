@@ -27,6 +27,15 @@ Route::group(['middleware' => ['anonymous', 'checkuserupdates']], function () {
 /*
  * User
  */
+Route::group(['middleware' => ['checkuserupdates']], function () {
+    Route::get('/users', 'Web\UserController@getUsersList')->name('usersList');
+
+    Route::get('/users/create', 'Web\UserController@getUserCreate')->name('userCreate');
+    Route::post('/users/create', 'Web\UserController@postUserCreate');
+
+    Route::get('/users/{userId}/edit', 'Web\UserController@getUserEdit')->name('userEdit');
+    Route::post('/users/{userId}/edit', 'Web\UserController@postUserEdit');
+});
 
 Route::get('/my-account', 'Web\UserController@getAccount')->name('account');
 Route::post('/my-account', 'Web\UserController@postAccount');

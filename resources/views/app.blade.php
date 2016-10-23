@@ -34,9 +34,18 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="{{ route('serversList') }}">@lang('server.servers_list')</a>
+                </li>
                 @if (auth()->check())
+                    @can('view', \MineStats\Models\User::class)
+                        <li>
+                            <a href="{{ route('usersList') }}">@lang('user.users_list')</a>
+                        </li>
+                    @endcan
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">
                             <i class="fa fa-user"></i> {{ auth()->user()->username }}
                             <span class="caret"></span>
                         </a>

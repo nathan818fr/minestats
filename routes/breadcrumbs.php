@@ -25,8 +25,23 @@ Breadcrumbs::register('serverEdit', function ($b, $server) {
  * User
  */
 
+Breadcrumbs::register('usersList', function ($b) {
+    $b->push(trans('user.users_list'), route('usersList'));
+});
+
+Breadcrumbs::register('userCreate', function ($b) {
+    $b->parent('usersList');
+    $b->push(trans('user.create_user'), route('userCreate'));
+});
+
+Breadcrumbs::register('userEdit', function ($b, $user) {
+    $b->parent('usersList');
+    $b->push(trans('user.edit_user', ['username' => $user->username]), route('userEdit', [
+        'userId' => $user->id
+    ]));
+});
+
 Breadcrumbs::register('account', function ($b) {
-    $b->parent('serversList');
     $b->push(trans('user.my_account'), route('account'));
 });
 
@@ -34,6 +49,5 @@ Breadcrumbs::register('account', function ($b) {
  * Login
  */
 Breadcrumbs::register('login', function ($b) {
-    $b->parent('serversList');
     $b->push(trans('auth.login'), route('login'));
 });
