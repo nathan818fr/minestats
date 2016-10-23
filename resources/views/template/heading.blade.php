@@ -51,7 +51,9 @@ if (!isset($title)) {
         @if (!empty($actions))
             <div class="actions">
                 @foreach($actions as $action)
-                    @include('template.components.' . $action['type'], $action)
+                    @if (!isset($action['condition']) || $action['condition']())
+                        @include('template.components.' . $action['type'], $action)
+                    @endif
                 @endforeach
             </div>
         @endif

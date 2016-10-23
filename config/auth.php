@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => MineStats\User::class,
+            'model' => MineStats\Models\User::class,
         ],
 
         // 'users' => [

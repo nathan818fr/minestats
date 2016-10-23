@@ -11,6 +11,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ServerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:create,MineStats\Models\Server')->only(['getServerCreate', 'postServerCreate']);
+        $this->middleware('can:update,MineStats\Models\Server')->only(['getServerEdit', 'postServerEdit']);
+        $this->middleware('can:delete,MineStats\Models\Server')->only(['deleteServer']);
+    }
+
     public function getServersList()
     {
         return view('view.server.servers-list');
@@ -117,6 +124,8 @@ class ServerController extends Controller
 
     public function deleteServer($serverId)
     {
+        \Gate::authorize('delete', Server::class);
+
         $server = Server::findOrFail($serverId);
         $server->delete();
         \Flash::error(trans('server.server_deleted'));

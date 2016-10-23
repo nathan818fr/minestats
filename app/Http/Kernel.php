@@ -3,6 +3,7 @@
 namespace MineStats\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use MineStats\Http\Middleware\CheckAnonymousAccess;
 
 class Kernel extends HttpKernel
 {
@@ -51,5 +52,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \MineStats\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'anonymous' => CheckAnonymousAccess::class,
     ];
 }

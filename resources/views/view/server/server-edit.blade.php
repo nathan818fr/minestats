@@ -87,9 +87,11 @@
                 {!! Form::submit(trans($server !== null ? 'form.edit' : 'form.create'), ['class' => 'btn btn-primary']) !!}
                 <a href="{{ route('serversList') }}" class="btn btn-default">@lang('form.cancel')</a>
                 @if ($server !== null)
-                    <div class="pull-right">
-                        {!! Form::submit(trans('form.delete'), ['class' => 'btn btn-danger confirm-submit', 'name' => 'delete']) !!}
-                    </div>
+                    @can('delete', \MineStats\Models\Server::class)
+                        <div class="pull-right">
+                            {!! Form::submit(trans('form.delete'), ['class' => 'btn btn-danger confirm-submit', 'name' => 'delete']) !!}
+                        </div>
+                    @endcan
                 @endif
             </div>
         </div>

@@ -1,5 +1,8 @@
 <?php
 
+/*
+ * Server
+ */
 Breadcrumbs::register('serversList', function ($b) {
     $b->push(trans('server.servers_list'), route('serversList'));
 });
@@ -16,4 +19,12 @@ Breadcrumbs::register('serverEdit', function ($b, $server) {
     ]), route('serverEdit', [
         'serverId' => $server->id
     ]));
+});
+
+/*
+ * Login
+ */
+Breadcrumbs::register('login', function ($b) {
+    $b->parent('serversList');
+    $b->push(trans('auth.login'), route('login'));
 });

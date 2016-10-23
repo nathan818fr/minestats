@@ -3,6 +3,11 @@
 return [
 
     /*
+     * Allow or not anonymous users to view the servers
+     */
+    'allow_anonymous'       => true,
+
+    /*
      * Ping interval in seconds (not recommended to set below 5)
      */
     'ping_interval'         => 5,

@@ -13,6 +13,10 @@
                     '
                 ],
                 [
+                    'condition' => function()
+                    {
+                        return Gate::check('create', \MineStats\Models\Server::class);
+                    },
                     'type' => 'button',
                     'icon' => 'plus',
                     'title' => trans('server.create_server'),
@@ -94,12 +98,14 @@
                     <div v-for="(server, index) in orderedServers" :key="server.id" class="case">
                         <div :id="['server-' + server.id]"
                              :class="['server', 'server-order-' + index, 'clearfix', 'popover-container']">
-                            <div class="popover-actions">
-                                <a :href="'{{ route('serverEdit', ['serverId' => '#SERVER_ID#']) }}'.replace('#SERVER_ID#', server.id)"
-                                   class="btn btn-default btn-xs">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                            </div>
+                            @can('update', \MineStats\Models\Server::class)
+                                <div class="popover-actions">
+                                    <a :href="'{{ route('serverEdit', ['serverId' => '#SERVER_ID#']) }}'.replace('#SERVER_ID#', server.id)"
+                                       class="btn btn-default btn-xs">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </div>
+                            @endcan
                             <div class="emblem">
                                 <img v-if="server.icon" class="icon icon-img" :src="server.icon">
                                 <div v-else class="icon icon-empty"></div>
