@@ -22,6 +22,15 @@ Breadcrumbs::register('serverEdit', function ($b, $server) {
 });
 
 /*
+ * User
+ */
+
+Breadcrumbs::register('account', function ($b) {
+    $b->parent('serversList');
+    $b->push(trans('user.my_account'), route('account'));
+});
+
+/*
  * Login
  */
 Breadcrumbs::register('login', function ($b) {

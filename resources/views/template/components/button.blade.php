@@ -1,10 +1,14 @@
 <?php
-$elem = !empty($url) ? 'a' : 'button';
+$arr = get_defined_vars();
+$elem = !empty($action['url']) ? 'a' : 'button';
 ?>
 <{{ $elem }}
         class="btn btn-default"
-{!! !empty($url) ? 'href="'.e($url).'"' : '' !!}
-{!! !empty($title) ? 'title="'.e($title).'"' : '' !!}
+{!! !empty($action['url']) ? 'href="'.e($action['url']).'"' : '' !!}
+{!! !empty($action['title']) ? 'title="'.e($action['title']).'"' : '' !!}
 >
-<i class="fa fa-{{ $icon }}"></i>{{ $text or '' }}
+@if (isset($action['icon']))
+    <i class="fa fa-{{ $action['icon'] }}"></i>
+@endif
+{{ $action['text'] or '' }}
 </{{ $elem }}>

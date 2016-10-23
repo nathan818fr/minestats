@@ -14,7 +14,7 @@
 /*
  * Server
  */
-Route::group(['middleware' => 'anonymous'], function () {
+Route::group(['middleware' => ['anonymous', 'checkuserupdates']], function () {
     Route::get('/', 'Web\ServerController@getServersList')->name('serversList');
 
     Route::get('/servers/create', 'Web\ServerController@getServerCreate')->name('serverCreate');
@@ -23,6 +23,13 @@ Route::group(['middleware' => 'anonymous'], function () {
     Route::get('/servers/{serverId}/edit', 'Web\ServerController@getServerEdit')->name('serverEdit');
     Route::post('/servers/{serverId}/edit', 'Web\ServerController@postServerEdit');
 });
+
+/*
+ * User
+ */
+
+Route::get('/my-account', 'Web\UserController@getAccount')->name('account');
+Route::post('/my-account', 'Web\UserController@postAccount');
 
 /*
  * Auth

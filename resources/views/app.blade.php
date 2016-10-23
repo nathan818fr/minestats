@@ -42,6 +42,10 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
+                                <a href="{{ route('account') }}">
+                                    @lang('user.my_account')</a>
+                            </li>
+                            <li>
                                 <a href="{{ \MineStats\Http\Controllers\Web\AuthController::getLogoutUrl() }}">
                                     @lang('auth.logout')</a>
                             </li>

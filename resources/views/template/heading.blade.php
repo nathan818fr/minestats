@@ -52,7 +52,7 @@ if (!isset($title)) {
             <div class="actions">
                 @foreach($actions as $action)
                     @if (!isset($action['condition']) || $action['condition']())
-                        @include('template.components.' . $action['type'], $action)
+                        @include('template.components.' . $action['type'], ['action' => $action])
                     @endif
                 @endforeach
             </div>

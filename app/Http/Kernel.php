@@ -4,6 +4,7 @@ namespace MineStats\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use MineStats\Http\Middleware\CheckAnonymousAccess;
+use MineStats\Http\Middleware\CheckMustChangePassword;
 
 class Kernel extends HttpKernel
 {
@@ -53,5 +54,6 @@ class Kernel extends HttpKernel
         'guest' => \MineStats\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'anonymous' => CheckAnonymousAccess::class,
+        'checkuserupdates' => CheckMustChangePassword::class,
     ];
 }
