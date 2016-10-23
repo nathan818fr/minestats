@@ -203,12 +203,14 @@ class Server extends Model
             }
 
             // Update stats entries
-            $statEntry = new ServerStat([
-                'recorded_at' => $now,
-                'players'     => $onlinePlayers,
-            ]);
-            $statEntry->server()->associate($this);
-            $statEntry->save();
+            if ($this->failed_ping_count > 1) {
+                $statEntry = new ServerStat([
+                    'recorded_at' => $now,
+                    'players'     => $onlinePlayers,
+                ]);
+                $statEntry->server()->associate($this);
+                $statEntry->save();
+            }
         });
     }
 
