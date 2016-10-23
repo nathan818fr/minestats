@@ -34,6 +34,16 @@ class AppServiceProvider extends ServiceProvider
 
             return true;
         });
+
+        Validator::extend('host', function ($attribute, $value, $parameters) {
+            if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+                return true;
+            }
+
+
+            // Ref: http://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
+            return preg_match('#^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$#', $value);
+        });
     }
 
     /**
@@ -46,5 +56,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment() !== 'production') {
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
+
+        require base_path('routes/breadcrumbs.php');
     }
 }

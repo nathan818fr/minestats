@@ -17,6 +17,7 @@
     "bootstrap-multiselect": "git+ssh://git@github.com/davidstutz/bootstrap-multiselect.git#76ad8ac05a1a89f538ac2b5d5e73eb9662475590"
   },
   "dependencies": {
+    "font-awesome": "^4.6.3",
     "highcharts": "^5.0.0",
     "moment": "^2.15.1",
     "moment-timezone": "^0.5.6",

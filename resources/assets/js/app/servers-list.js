@@ -119,7 +119,10 @@ ServersRealtimeGraphs.prototype = {
         $(window).unbind('resize', this._onWindowResize);
 
         this.stopPingTask();
-        // TODO: Destroy graphs
+        for (var serverId in this._graphs) {
+            this.destroyGraph(this._graphs[serverId]);
+            delete this._graphs[serverId];
+        }
     },
 
     // - Private part
@@ -203,10 +206,6 @@ ServersRealtimeGraphs.prototype = {
      */
     destroyGraph: function (graph) {
         graph.destroy();
-        for (var serverId in this._graphs) {
-            destroyGraph(this._graphs[serverId]);
-            delete graphs[serverId];
-        }
     },
 
     /**

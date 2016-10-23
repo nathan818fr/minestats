@@ -1,7 +1,17 @@
 @extends('app')
 
-@section('title', trans('server.servers_list'))
 @section('content')
+    @include('template.heading', [
+        'actions' => [
+            [
+                'type' => 'button',
+                'icon' => 'plus',
+                'title' => trans('server.create_server'),
+                'url' => route('serverCreate'),
+            ]
+        ]
+    ])
+
     <div class="container content-margin-top">
         <div id="servers-list" class="clearfix" v-cloak>
             <div class="global-graph">
@@ -16,7 +26,7 @@
                 </div>
                 <div class="filters-content" v-show="filters.show">
                     <?php $cols = 'col-sm-6 col-md-4 col-lg-3'; ?>
-                    <form class=" clearfix">
+                    <form class="clearfix">
                         <div class="{{ $cols }}">
                             <div class="form-group">
                                 <label for="serversFilterTypes">@lang('server.filters.types')</label>
@@ -74,7 +84,13 @@
             <div class="list">
                 <div v-for="(server, index) in orderedServers" :key="server.id" class="case">
                     <div :id="['server-' + server.id]"
-                         :class="['server', 'server-order-' + index, 'clearfix']">
+                         :class="['server', 'server-order-' + index, 'clearfix', 'popover-container']">
+                        <div class="popover-actions">
+                            <a :href="'{{ route('serverEdit', ['serverId' => '#SERVER_ID#']) }}'.replace('#SERVER_ID#', server.id)"
+                               class="btn btn-default btn-xs">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
                         <div class="emblem">
                             <img v-if="server.icon" class="icon icon-img" :src="server.icon">
                             <div v-else class="icon icon-empty"></div>

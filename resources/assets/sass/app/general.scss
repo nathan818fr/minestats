@@ -2,6 +2,16 @@
   margin-top: 15px;
 }
 
+.alert-container {
+  .alert:first-child {
+    margin-top: 18px;
+  }
+}
+
+.confirm-submit {
+  display: none;
+}
+
 /*
  * Allow highchart tooltip to display out of chart container
  */
@@ -11,4 +21,26 @@
 
 .highcharts-container .highcharts-tooltip {
   background-color: #fff;
+}
+
+.popover-container {
+  position: relative;
+
+  .popover-actions {
+    display: none;
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    opacity: 0.8;
+  }
+
+  .popover-actions:hover {
+    opacity: 1;
+  }
+}
+
+.popover-container:hover {
+  .popover-actions {
+    display: block;
+  }
 }

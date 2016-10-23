@@ -13,5 +13,5 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('servers', 'Api\ServerController@getServers');
-Route::get('servers/stats/realtime', 'Api\ServerController@getRealtimeServersStats');
+Route::get('servers', 'Api\ServerController@getServers'); // ->middleware('throttle:30,1');
+Route::get('servers/stats/realtime', 'Api\ServerController@getRealtimeServersStats'); //->middleware('throttle:30,1');

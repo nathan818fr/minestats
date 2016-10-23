@@ -12,3 +12,9 @@
 */
 
 Route::get('/', 'Web\ServerController@getServersList')->name('serversList');
+
+Route::get('/servers/create', 'Web\ServerController@getServerCreate')->name('serverCreate');
+Route::post('/servers/create', 'Web\ServerController@postServerCreate');
+
+Route::get('/servers/{serverId}/edit', 'Web\ServerController@getServerEdit')->name('serverEdit');
+Route::post('/servers/{serverId}/edit', 'Web\ServerController@postServerEdit');

@@ -167,7 +167,11 @@ return [
          * Package Service Providers...
          */
 
-        //
+        Collective\Html\HtmlServiceProvider::class,
+
+        DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
+
+        Laracasts\Flash\FlashServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -226,6 +230,15 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /*
+         * Package
+         */
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
+
+        'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
+
+        'Flash' => Laracasts\Flash\Flash::class,
     ],
 
 ];

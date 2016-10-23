@@ -3,17 +3,58 @@ header {
   color: #FFFFFF;
 
   #logo {
-    float: left;
+    text-align: center;
 
     h1, h1:hover {
-      color: #FFFFFF;
-      margin: 12px 0;
+      display: inline-block;
+      margin: 0 0 7px;
       padding: 0;
-      font-size: 36px;
+      font-family: Raleway, sans-serif;
+      font-weight: 600;
+      font-size: 50px;
+      color: #FFFFFF;
+      text-transform: lowercase;
+      font-variant: small-caps;
     }
 
     a, a:hover {
       text-decoration: none;
     }
+  }
+}
+
+.heading {
+  background: #FFF;
+  border-bottom: 2px solid #343535;
+  box-shadow: 0 -1px 7px rgba(0, 0, 0, .77);
+
+  .container {
+    display: flex;
+    align-items: center;
+  }
+
+  .title {
+    flex: 1;
+    h1 {
+      font-family: Raleway, sans-serif;
+      font-weight: 300;
+      margin: 12px 0;
+      padding: 0;
+
+      .btn {
+        margin-top: -9px;
+      }
+    }
+  }
+
+  .breadcrumb {
+    margin: -8px 0 8px;
+    padding: 0;
+    background: transparent;
+    font-size: 0.9em;
+  }
+
+  .actions {
+
   }
 }
