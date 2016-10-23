@@ -7,7 +7,7 @@
                 [
                     'type' => 'custom',
                     'html' => '
-                    <button v-cloak v-on:click="toggleExpandedOption" :class="(options.expanded ? \'active \' : \'\') + \'btn btn-default\'">
+                    <button v-cloak v-on:click="toggleExpandedOption" :class="(options.expanded ? \'active \' : \'\') + \'btn btn-default hidden-xs\'">
                         <i class="fa fa-arrows-h"></i>
                     </button>
                     '
