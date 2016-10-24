@@ -5,6 +5,7 @@ namespace MineStats\Http;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use MineStats\Http\Middleware\CheckAnonymousAccess;
 use MineStats\Http\Middleware\CheckMustChangePassword;
+use MineStats\Http\Middleware\SetTrustedProxies;
 
 class Kernel extends HttpKernel
 {
@@ -17,6 +18,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        SetTrustedProxies::class
     ];
 
     /**
@@ -47,13 +49,13 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \MineStats\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'anonymous' => CheckAnonymousAccess::class,
+        'auth'             => \Illuminate\Auth\Middleware\Authenticate::class,
+        'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings'         => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'can'              => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest'            => \MineStats\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'anonymous'        => CheckAnonymousAccess::class,
         'checkuserupdates' => CheckMustChangePassword::class,
     ];
 }

@@ -1,5 +1,10 @@
 <?php
 
+$trustedProxies = env('MINESTATS_TRUSTED_PROXIES', null);
+if (!empty($trustedProxies)) {
+    $trustedProxies = explode(',', $trustedProxies);
+}
+
 return [
 
     /*
@@ -56,5 +61,7 @@ return [
         24 * 60      => 30, // After 1 day, keep max 1 stat every 30 minutes
         30 * 24 * 60 => -1 // Delete stats after 30 days
     ],
+
+    'trusted_proxies' => $trustedProxies
 
 ];
