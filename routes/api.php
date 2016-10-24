@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['middleware' => ['anonymous', 'checkuserupdates']], function () {
-    Route::get('servers', 'Api\ServerController@getServers'); // ->middleware('throttle:30,1');
+    Route::get('servers', 'Api\ServerController@getServers')->middleware('throttle:120,1');
     Route::get('servers/stats/realtime',
-        'Api\ServerController@getRealtimeServersStats'); //->middleware('throttle:30,1');
+        'Api\ServerController@getRealtimeServersStats')->middleware('throttle:120,1');
 });
