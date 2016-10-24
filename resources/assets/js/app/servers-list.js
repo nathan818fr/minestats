@@ -464,10 +464,10 @@ const serversList = new Vue({
                 this.serversRealtimeGraphs.updateData();
             });
         },
-        filtersUpdated: _.debounce(function () {
+        filtersUpdated: _.throttle(function () {
             this.saveFilters();
             this.fetchServers();
-        }, 1000),
+        }, 2500),
         saveFilters: function () {
             store.set('minestats.serversList.filters', {
                 show: this.filters.show,
