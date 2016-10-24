@@ -80,9 +80,11 @@ class ServerController extends Controller
             $server->save();
 
             $languages = $req->get('languages');
-            foreach ($languages as $languagesId => $value) {
-                if (strtolower($languagesId) !== $languagesId) {
-                    throw new BadRequestHttpException();
+            if (!empty($languages)) {
+                foreach ($languages as $languagesId => $value) {
+                    if (strtolower($languagesId) !== $languagesId) {
+                        throw new BadRequestHttpException();
+                    }
                 }
             }
 
