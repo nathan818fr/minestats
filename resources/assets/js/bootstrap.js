@@ -31,6 +31,17 @@ window.Highcharts = require('highcharts');
 window.moment = require('moment');
 
 /**
+ * PNotify
+ */
+window.PNotify = require('pnotify');
+require('pnotify/src/pnotify.buttons.js');
+PNotify.prototype.options.styling = "fontawesome";
+PNotify.prototype.options.delay = 4000;
+PNotify.prototype.options.addclass = "stack-bottomright";
+PNotify.prototype.options.stack = {"dir1": "up", "dir2": "left", "push": "top", "firstpos1": 5, "firstpos2": 5};
+PNotify.prototype.options.buttons.sticker = false;
+
+/**
  * We'll register a HTTP interceptor to attach the "CSRF" header to each of
  * the outgoing requests issued by this application. The CSRF middleware
  * included with Laravel will automatically verify the header's value.

@@ -20,6 +20,8 @@ elixir(function (mix) {
     mix.sass([
         'app.scss',
         '../lib/flags/flags.css',
-        '../../../node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css'
+        '../../../node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css',
+        '../../../node_modules/pnotify/src/pnotify.css',
+        '../../../node_modules/pnotify/src/pnotify.buttons.css'
     ], 'public/assets/css/app.css').webpack('app.js', 'public/assets/js/app.js');
 });

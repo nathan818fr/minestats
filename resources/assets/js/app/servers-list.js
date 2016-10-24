@@ -252,9 +252,19 @@ ServersRealtimeGraphs.prototype = {
             var data = res.body;
             this._pingMaxId = data.max_id;
             this.updateStats(data.min_date, data.stats);
-        }.bind(this), function () {
+        }.bind(this), function (res) {
+            if (res.status == 401) { // Unauthorized
+                window.location.reload();
+                return;
+            }
+
             always();
-            // TODO(nathan818): Notify error
+            new PNotify({
+                type: 'error',
+                title: 'Unable to update realtime graph',
+                text: '#' + res.status + ': ' + (res.status == 0 ?
+                    'Network error' : res.statusText)
+            });
         }.bind(this));
     },
 
@@ -370,7 +380,8 @@ const serversList = new Vue({
             },
             options: {
                 expanded: false
-            }
+            },
+            errors: {}
         };
         var filters = store.get('minestats.serversList.filters');
         if (filters) {
