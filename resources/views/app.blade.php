@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{-- TODO(nathan818): Add description meta - <meta name="description" content=""> --}}
     <meta name="author" content="Nathan Poirier">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="{{ asset('assets/img/favicon.png')  }}">
 
     <title>@yield('title') - MineStats</title>
 
