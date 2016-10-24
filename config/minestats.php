@@ -39,4 +39,22 @@ return [
      */
     'ping_mode'             => env('MINESTATS_PING_MODE', 'cron'),
 
+    /*
+     * Periodically remove the old stats
+     *
+     * [
+     *     ElapsedTime => MinInterval,
+     *     ...
+     * ]
+     *
+     * After ElapsedTime minutes, we must keep maximum one stat every MinInterval minutes per servers.
+     * Set MinInterval to -1 to remove.
+     */
+    'stats_gc'              => [
+        5            => 1, // After 5 mins, keep max 1 stat per minutes
+        60           => 15, // After 60 mins, keep max 1 stat every 15 minutes
+        24 * 60      => 30, // After 1 day, keep max 1 stat every 30 minutes
+        30 * 24 * 60 => -1 // Delete stats after 30 days
+    ],
+
 ];

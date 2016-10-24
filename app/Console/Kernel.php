@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         PingServerCommand::class,
         PingTasksCommand::class,
+        StatsGcCommand::class,
     ];
 
     /**
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('tasks:stats-gc')->everyThirtyMinutes();
         if (config('minestats.ping_mode') == 'cron') {
             $schedule->command('tasks:ping', [62])->everyMinute();
         }
