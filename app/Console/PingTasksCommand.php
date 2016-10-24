@@ -19,6 +19,9 @@ class PingTasksCommand extends Command
         // Set defaults variables
         $startTime = time();
         $duration = $this->argument('duration') + 0;
+        if (@set_time_limit($duration) === false) {
+            $this->warn('Unable to set time limit.');
+        }
         $interval = config('minestats.ping_interval');
 
         // Get servers list and disconnect DB (we will make forks, so the db must be disconnected before)
