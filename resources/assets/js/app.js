@@ -30,7 +30,7 @@ Number.prototype.format = function (n, x, s, c) {
  */
 
 $('.confirm-submit').removeClass('confirm-submit').click(function (e) {
-    if (confirm('Are-you sure ?') !== true) // TODO(nathan818): i18n
+    if (confirm(Lang.get('general.confirmation_are_you_sure')) !== true)
         e.preventDefault();
 });
 

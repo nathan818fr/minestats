@@ -17,6 +17,7 @@
         "nathan818/phpuc-net-sockets": "^1.0",
         "nathan818/php-minecraft-pinger": "^1.0",
         "davejamesmiller/laravel-breadcrumbs": "dev-master#0b05d04c2aead5fadbbb330fc908986ba59c8a69",
+        "andywer/js-localization": "dev-laravel-5",
         "laravelcollective/html": "^5.3.0",
         "laracasts/flash": "^2.0"
     },

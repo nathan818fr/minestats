@@ -1,3 +1,4 @@
+@include('js-localization::head')
 <!DOCTYPE html>
 <html lang="{{ App::getLocale() }}">
 <head>
@@ -88,6 +89,7 @@
                         'csrfToken' => csrf_token(),
                     ]) !!};
 </script>
+@yield('js-localization.head')
 <script src="{{ asset('assets/js/app.js') }}"></script>
 </body>
 </html>

@@ -231,7 +231,7 @@ ServersRealtimeGraphs.prototype = {
         var always = function () {
             this._pingTask = setTimeout(function () {
                 this.ping();
-            }.bind(this), 5500);  // TODO(nathan818): Use value from config
+            }.bind(this), Config.get('minestats.ui_update_interval'));
         }.bind(this);
         var markFirstFill = function (serverId) {
             this._graphs[serverId].firstFilled = true;
@@ -302,7 +302,7 @@ ServersRealtimeGraphs.prototype = {
         }.bind(this));
 
         // Remove old points & update render
-        var minX = moment.utc(minDate).unix() * 1000; // TODO(nathan818): Interval from config
+        var minX = moment.utc(minDate).unix() * 1000;
         for (var serverId in this._graphs) {
             var graph = this._graphs[serverId];
 
@@ -365,6 +365,16 @@ ServersRealtimeGraphs.prototype = {
 /*
  * Servers list vue
  */
+var vueMultiselect = function (el, onChange) {
+    el.multiselect({
+        nonSelectedText: Lang.get('general.all'),
+        allSelectedText: Lang.get('general.all'),
+        selectAllNumber: false,
+        enableHTML: true,
+        onChange: onChange
+    });
+};
+
 const serversList = new Vue({
     el: '#servers-list',
 
@@ -412,32 +422,14 @@ const serversList = new Vue({
 
     mounted: function () {
         var self = this;
-        // TODO(nathan818): Move multi-selects build in mixin
-        // TODO(nathan818): i18n for texts
-        $('select[name=languages]', this.$el).multiselect({
-            nonSelectedText: 'All',
-            allSelectedText: 'All',
-            selectAllNumber: false,
-            enableHTML: true,
-            onChange: function () {
-                self.filters.languages = this.$select.val();
-            }
+        vueMultiselect($('select[name=languages]', this.$el), function () {
+            self.filters.languages = this.$select.val();
         });
-        $('select[name=versions]', this.$el).multiselect({
-            nonSelectedText: 'All',
-            allSelectedText: 'All',
-            selectAllNumber: false,
-            onChange: function () {
-                self.filters.versions = this.$select.val();
-            }
+        vueMultiselect($('select[name=versions]', this.$el), function () {
+            self.filters.versions = this.$select.val();
         });
-        $('select[name=types]', this.$el).multiselect({
-            nonSelectedText: 'All',
-            allSelectedText: 'All',
-            selectAllNumber: false,
-            onChange: function () {
-                self.filters.types = this.$select.val();
-            }
+        vueMultiselect($('select[name=types]', this.$el), function () {
+            self.filters.types = this.$select.val();
         });
     },
 
