@@ -43,7 +43,7 @@ class ServerController extends Controller
 
     public function getServers(Request $req)
     {
-        // TODO(nathan818): Cache servers lists requests
+        // TODO(nathan818): Cache servers lists requests?
 
         // Validate request
         $this->arrayParam($req, 'with');

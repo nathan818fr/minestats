@@ -87,7 +87,7 @@ ServersRealtimeGraphs.prototype = {
 
         // Ping (if needed)
         if (hasNew)
-            this.ping(); // TODO(nathan818): "Debounce?"
+            this.ping();
     },
 
     /**

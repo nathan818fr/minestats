@@ -122,7 +122,7 @@
                                                   v-if="filters.secondaryLanguages || language.main">
                                             {{-- TODO(nathan818): vuejs i18n --}}
                                             <span :class="['language', 'language-main', 'flag', 'flag-' + language.id]"
-                                                  :title="language.id"></span>@{{ ' ' }}
+                                                  :title="('server.lang.' + language.id).getLang()"></span>@{{ ' ' }}
                                         </template>
                                     </span>
                                 </h3>

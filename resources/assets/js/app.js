@@ -25,6 +25,11 @@ Number.prototype.format = function (n, x, s, c) {
     return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
 };
 
+// For lang inside Vue directive
+String.prototype.getLang = function () {
+    return Lang.get(this);
+};
+
 /*
  * Forms
  */

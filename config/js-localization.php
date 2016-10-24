@@ -31,6 +31,7 @@ return [
     'messages' => [
         'general.all',
         'general.confirmation_are_you_sure',
+        'server.lang',
     ],
 
     /*
