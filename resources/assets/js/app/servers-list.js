@@ -227,6 +227,10 @@ ServersRealtimeGraphs.prototype = {
             }
         }
 
+        if (servers.length == 0 && newServers.length == 0) {
+            return;
+        }
+
         // HTTP request
         var always = function () {
             this._pingTask = setTimeout(function () {
