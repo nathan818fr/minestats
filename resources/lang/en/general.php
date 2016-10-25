@@ -2,7 +2,8 @@
 
 return [
 
-    'all' => 'All',
+    'all'     => 'All',
+    'loading' => 'Loading...',
 
     'create' => 'Create',
     'edit'   => 'Edit',

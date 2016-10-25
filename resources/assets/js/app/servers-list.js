@@ -1,15 +1,4 @@
-/*
- * All servers graph manager
- */
-const AllServersGraph = function (vueServersList) {
-    this.init(vueServersList);
-};
-
-AllServersGraph.prototype = {
-    init: function (vueServersList) {
-        this._vueServersList = vueServersList;
-    }
-};
+const notify = require('./notify');
 
 /*
  * Per-servers realtime graph manager
@@ -257,18 +246,8 @@ ServersRealtimeGraphs.prototype = {
             this._pingMaxId = data.max_id;
             this.updateStats(data.min_date, data.stats);
         }.bind(this), function (res) {
-            if (res.status == 401) { // Unauthorized
-                window.location.reload();
-                return;
-            }
-
             always();
-            new PNotify({
-                type: 'error',
-                title: 'Unable to update realtime graph',
-                text: '#' + res.status + ': ' + (res.status == 0 ?
-                    'Network error' : res.statusText)
-            });
+            notify.ajaxError('Unable to update realtime graph', res);
         }.bind(this));
     },
 
@@ -384,6 +363,7 @@ const serversList = new Vue({
 
     data: function () {
         var data = {
+            loaded: false,
             servers: [],
             filters: {
                 show: false,
@@ -459,9 +439,18 @@ const serversList = new Vue({
                 options.versions = this.filters.versions.join(',');
             if (this.filters.types.length)
                 options.types = this.filters.types.join(',');
-            this.$http.get('/api/servers?' + $.param(options)).then(function (servers) {
-                this.servers = servers.body;
+            this.$http.get('/api/servers?' + $.param(options)).then(function (res) {
+                this.loaded = true;
+                this.servers = res.body;
                 this.serversRealtimeGraphs.updateData();
+            }, function (res) {
+                console.log(notify);
+                notify.ajaxError('Unable to update servers list', res);
+                if (!this.loaded) {
+                    setTimeout(function () {
+                        this.fetchServers();
+                    }.bind(this), 4000);
+                }
             });
         },
         filtersUpdated: _.throttle(function () {

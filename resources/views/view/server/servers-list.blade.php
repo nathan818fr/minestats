@@ -29,7 +29,7 @@
 
         <div :class="'container content-margin-top' + (options.expanded ? ' container-expanded' : '')">
             <div class="clearfix" v-cloak>
-                <div class="global-graph">
+                <div id="global-graph">
                     <div class="graph-container"></div>
                 </div>
                 <div class="filters">
@@ -97,6 +97,9 @@
                 </div>
 
                 <div class="list">
+                    <div v-if="!loaded">
+                        <i class="fa fa-spin fa-spinner"></i> @lang('general.loading')
+                    </div>
                     <div v-for="(server, index) in orderedServers" :key="server.id" class="case">
                         <div :id="['server-' + server.id]"
                              :class="['server', 'server-order-' + index, 'clearfix', 'popover-container']">
