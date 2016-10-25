@@ -14,4 +14,10 @@ class VerifyCsrfToken extends BaseVerifier
     protected $except = [
         //
     ];
+
+    protected function addCookieToResponse($request, $response)
+    {
+        // We don't use csrf cookie
+        return $response;
+    }
 }
