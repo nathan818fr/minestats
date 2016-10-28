@@ -7,6 +7,16 @@
                 [
                     'type' => 'custom',
                     'html' => '
+                    <button v-on:click="toggleServersGraphOption"
+                        :class="(options.showServersGraph ? \'active \' : \'\') + \'btn btn-primary\'">
+                        @{{ options.showServersGraph ? \''.trans('server.options.hide_servers_chart').'\' :
+                            \''.trans('server.options.show_servers_chart').'\' }}
+                    </button>
+                    '
+                ],
+                [
+                    'type' => 'custom',
+                    'html' => '
                     <button v-cloak v-on:click="toggleExpandedOption"
                         :class="(options.expanded ? \'active \' : \'\') + \'btn btn-default hidden-xs\'"
                         data-toggle="tooltip" title="'.trans('server.options.toggle_expanded_mode').'">
@@ -30,9 +40,6 @@
         <div :class="'container content-margin-top' + (options.expanded ? ' container-expanded' : '')">
             <div class="clearfix" v-cloak>
                 <div id="global-graph" class="text-center">
-                    <button v-on:click="toggleServersGraphOption" class="btn btn-primary">
-                        @{{ options.showServersGraph ? '@lang('server.options.hide_servers_chart')' :
-                            '@lang('server.options.show_servers_chart')' }}</button>
                     <div v-show="options.showServersGraph" class="graph-container"></div>
                 </div>
                 <div class="filters">
