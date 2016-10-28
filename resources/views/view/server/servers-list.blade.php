@@ -7,7 +7,7 @@
                 [
                     'type' => 'custom',
                     'html' => '
-                    <button v-on:click="toggleServersGraphOption"
+                    <button v-cloak v-on:click="toggleServersGraphOption"
                         :class="(options.showServersGraph ? \'active \' : \'\') + \'btn btn-primary\'">
                         @{{ options.showServersGraph ? \''.trans('server.options.hide_servers_chart').'\' :
                             \''.trans('server.options.show_servers_chart').'\' }}
