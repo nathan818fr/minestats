@@ -62,6 +62,11 @@ return [
         30 * 24 * 60 => -1 // Delete stats after 30 days
     ],
 
-    'trusted_proxies' => $trustedProxies
+    'trusted_proxies' => $trustedProxies,
+
+    /*
+     * Assets revisions to force cache reload.
+     */
+    'assets_revision' => env('MINESTATS_ASSETS_REV', null),
 
 ];

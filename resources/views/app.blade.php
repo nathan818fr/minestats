@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{-- TODO(nathan818): Add description meta - <meta name="description" content=""> --}}
     <meta name="author" content="Nathan Poirier">
-    <link rel="icon" href="{{ asset('assets/img/favicon.png')  }}">
+    <link rel="icon" href="{{ rev_asset('assets/img/favicon.png')  }}">
 
     <title>@yield('title') - MineStats</title>
 
     <!-- CSS -->
-    <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
+    <link href="{{ rev_asset('assets/css/app.css') }}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -90,6 +90,6 @@
                     ]) !!};
 </script>
 @yield('js-localization.head')
-<script src="{{ asset('assets/js/app.js') }}"></script>
+<script src="{{ rev_asset('assets/js/app.js') }}"></script>
 </body>
 </html>
