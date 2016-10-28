@@ -352,7 +352,7 @@ var vueMultiselect = function (el, onChange) {
     el.multiselect({
         nonSelectedText: Lang.get('general.all'),
         allSelectedText: Lang.get('general.all'),
-        selectAllNumber: false,
+        selectAllNumber: true,
         enableHTML: true,
         onChange: onChange
     });
@@ -466,6 +466,15 @@ const serversList = new Vue({
                 types: this.filters.types
             });
         },
+        resetFilters: function () {
+            console.log($('select[name=languages]', this.$el));
+            this.filters.languages = [];
+            $('select[name=languages]', this.$el).multiselect('deselectAll', false).multiselect('updateButtonText');
+            this.filters.versions = [];
+            $('select[name=versions]', this.$el).multiselect('deselectAll', false).multiselect('updateButtonText');
+            this.filters.types = [];
+            $('select[name=types]', this.$el).multiselect('deselectAll', false).multiselect('updateButtonText');
+        },
         toggleExpandedOption: function () {
             this.options.expanded = !this.options.expanded;
             store.set('minestats.serversList.options', this.options);
@@ -477,6 +486,13 @@ const serversList = new Vue({
             return _.sortBy(this.servers, function (server) {
                 return -server.players;
             });
+        },
+        activeFiltersCount: function () {
+            var count = 0;
+            this.filters.languages.length > 0 && count++;
+            this.filters.versions.length > 0 && count++;
+            this.filters.types.length > 0 && count++;
+            return count;
         }
     }
 });

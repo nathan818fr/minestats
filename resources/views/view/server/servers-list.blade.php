@@ -37,7 +37,13 @@
                         <a href="javascript:;" v-on:click="filters.show = !filters.show; saveFilters()">
                             <i :class="['glyphicon', 'glyphicon-chevron-' + (filters.show ? 'up' : 'down') ]"></i>
                             @lang('server.filters.filters')
+                            <template v-if="activeFiltersCount > 0">(@{{ activeFiltersCount }})</template>
                         </a>
+                        <template v-if="activeFiltersCount > 0">
+                            <button class="btn btn-xs btn-default" v-on:click="resetFilters">
+                                <i class="fa fa-remove"></i> @lang('server.filters.reset')
+                            </button>
+                        </template>
                     </div>
                     <div class="filters-content" v-show="filters.show">
                         <?php $cols = 'col-sm-6 col-md-4 col-lg-3'; ?>
@@ -151,6 +157,9 @@
                             </div>
                         </div>
                     </div>
+                    <template v-if="loaded && orderedServers.length == 0">
+                        @lang('server.empty')
+                    </template>
                 </div>
             </div>
         </div>

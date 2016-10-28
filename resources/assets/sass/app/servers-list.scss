@@ -6,6 +6,11 @@
 
     .filters-head {
       text-align: center;
+
+      button {
+        position: relative;
+        top: -1px;
+      }
     }
 
     .filters-content {

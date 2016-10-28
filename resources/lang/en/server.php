@@ -21,6 +21,7 @@ return [
 
     'players' => 'Players',
     'down'    => 'Down',
+    'empty'   => 'No server matches the requested filters...',
 
     'lang' => [
         'de' => 'German',
@@ -32,6 +33,7 @@ return [
     ],
 
     'filters' => [
+        'reset'                       => 'Reset',
         'filters'                     => 'Filters',
         'languages'                   => 'Languages',
         'versions'                    => 'Versions',
