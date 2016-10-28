@@ -87,9 +87,9 @@
 <script>
     window.Laravel = {!! json_encode([
                         'csrfToken' => csrf_token(),
+                        'locale' => App::getLocale(),
                     ]) !!};
 </script>
-@yield('js-localization.head')
 <script src="{{ rev_asset('assets/js/app.js') }}"></script>
 </body>
 </html>
