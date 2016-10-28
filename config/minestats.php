@@ -57,16 +57,43 @@ return [
      */
     'stats_gc'              => [
         5            => 1, // After 5 mins, keep max 1 stat per minutes
-        60           => 15, // After 60 mins, keep max 1 stat every 15 minutes
-        24 * 60      => 30, // After 1 day, keep max 1 stat every 30 minutes
-        30 * 24 * 60 => -1 // Delete stats after 30 days
+        60           => 5, // After 60 mins, keep max 1 stat every 5 minutes
+        24 * 60      => 10, // After 1 day, keep max 1 stat every 10 minutes
+        // 15 * 24 * 60 => 30, // After 15 day, keep max 1 stat every 30 minutes
+        60 * 24 * 60 => -1 // Delete stats after 60 days
     ],
 
-    'trusted_proxies' => $trustedProxies,
+    /*
+     * Graph navigator options
+     *
+     * [MaxInterval, SamplePerMinutes]
+     */
+    'stats_graph_navigator' => [60 * 24 * 60, 60],
+
+    /*
+     * Graph options
+     *
+     * [
+     *     Interval => [SamplePerMinutes, SideCache]
+     *     ...
+     * ]
+     *
+     * Must be from smallest to largest Interval!
+     */
+    'stats_graph'           => [
+        24 * 60      => [10, 24 * 60],
+        3 * 24 * 60  => [30, 24 * 60],
+        60 * 24 * 60 => [60, 3 * 24 * 60],
+    ],
+
+    /*
+     * Trusted proxies
+     */
+    'trusted_proxies'       => $trustedProxies, // MINESTATS_TRUSTED_PROXIES
 
     /*
      * Assets revisions to force cache reload.
      */
-    'assets_revision' => env('MINESTATS_ASSETS_REV', null),
+    'assets_revision'       => env('MINESTATS_ASSETS_REV', null),
 
 ];

@@ -43,6 +43,7 @@ return [
     'config' => [
         'minestats.ui_update_interval',
         'minestats.ui_realtime_period',
+        'minestats.stats_graph',
     ],
 
     /*

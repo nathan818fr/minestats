@@ -3,6 +3,7 @@
 namespace MineStats\Models;
 
 use Carbon\Carbon;
+use ColorThief\ColorThief;
 use Illuminate\Database\Eloquent\Model;
 use MinecraftPinger\MinecraftPinger;
 use MinecraftPinger\MinecraftPingException;
@@ -34,6 +35,8 @@ class Server extends Model
         'icon_updated_at',
         'versions_updated_at',
         'failed_ping_count',
+        'auto_color',
+        'color',
     ];
 
     /*
@@ -53,7 +56,7 @@ class Server extends Model
     /*
      * Serialization hidden fields
      */
-    protected $hidden = ['icon'];
+    protected $hidden = ['icon', 'auto_color'];
 
     public function toArray()
     {
@@ -127,11 +130,14 @@ class Server extends Model
 
         // Favicon
         $favicon = null;
+        $faviconColor = null;
         if ($updateIcon && isset($pingResponse->favicon) && strlen($pingResponse->favicon) < 32767) {
-            $favicon = $this->validateBase64Png($pingResponse->favicon);
-            if ($favicon === false) {
+            $res = $this->validateBase64Png($pingResponse->favicon);
+            if ($res === false) {
                 $favicon = null;
             }
+            $favicon = $res['favicon'];
+            $faviconColor = $res['color'];
         }
 
         // Check versions
@@ -158,6 +164,7 @@ class Server extends Model
             $checkVersions,
             $onlinePlayers,
             $favicon,
+            $faviconColor,
             $supportedVersions
         ) {
             $now = Carbon::now();
@@ -174,6 +181,9 @@ class Server extends Model
             }
             if ($favicon !== null) {
                 $this->icon = $favicon;
+            }
+            if ($this->auto_color && $faviconColor !== null) {
+                $this->color = $faviconColor;
             }
             $this->updated_at = $now;
             if ($updateIcon) {
@@ -258,6 +268,33 @@ class Server extends Model
                 return false;
             }
 
+            if ($this->auto_color) {
+                $palette = ColorThief::getPalette($img, 4, 2);
+                $selectedColor = null;
+                foreach ($palette as $color) {
+                    $colSum = $color[0] + $color[1] + $color[2];
+                    if ($colSum > 150 && $colSum < 255 * 3 - 150) {
+                        $selectedColor = $color;
+                        break;
+                    }
+                }
+                if ($selectedColor !== null) {
+                    $r = dechex($selectedColor[0]);
+                    $g = dechex($selectedColor[1]);
+                    $b = dechex($selectedColor[2]);
+                    if (strlen($r) < 2) {
+                        $r = '0'.$r;
+                    }
+                    if (strlen($g) < 2) {
+                        $g = '0'.$g;
+                    }
+                    if (strlen($b) < 2) {
+                        $b = '0'.$b;
+                    }
+                    $faviconColor = $r.$g.$b;
+                }
+            }
+
             ob_start();
             try {
                 if (@imagealphablending($img, true) === false ||
@@ -273,6 +310,9 @@ class Server extends Model
             }
         }
 
-        return $data;
+        return [
+            'favicon' => $data,
+            'color'   => isset($faviconColor) ? $faviconColor : null,
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace MineStats\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use MineStats\Http\Controllers\Controller;
@@ -117,6 +118,108 @@ class ServerController extends Controller
         }
 
         return response()->json($servers);
+    }
+
+    public function getServersStats(Request $req)
+    {
+        $this->arrayParam($req, 'servers');
+        $this->validateOnly($req, [
+            'servers'   => 'numeric_array',
+            'from_date' => 'required_with:to_date|datetime',
+            'to_date'   => 'required_with:from_date|datetime',
+        ]);
+
+        $servers = $req->get('servers');
+        $fromDate = $req->has('from_date') ? Carbon::createFromFormat('Y-m-d H:i:s', $req->get('from_date')) : null;
+        $toDate = $req->has('to_date') ? Carbon::createFromFormat('Y-m-d H:i:s', $req->get('to_date')) : null;
+
+        $options = [
+            'sideCache'     => null,
+            'statsInterval' => null,
+        ];
+        if ($fromDate !== null) {
+            // Servers
+            $isNavigator = false;
+            if ($toDate <= $fromDate) {
+                throw new BadRequestHttpException('to_date must be greater than from_date');
+            }
+            $minutesInterval = $fromDate->diffInMinutes($toDate);
+            $config = config('minestats.stats_graph');
+            foreach ($config as $period => $_config) {
+                if ($minutesInterval <= $period) {
+                    $options['statsInterval'] = $_config[0];
+                    $options['sideCache'] = $_config[1];
+                    break;
+                }
+            }
+            if ($options['statsInterval'] === null) {
+                throw new BadRequestHttpException('date interval is too high!');
+            }
+        } else {
+            // Navigator
+            $isNavigator = true;
+            $config = config('minestats.stats_graph_navigator');
+            $fromDate = Carbon::now()->subMinute($config[0]);
+            $options['statsInterval'] = $config[1];
+        }
+
+        if (isset($options['sideCache']) && $options['sideCache'] !== null) {
+            $fromDate->subMinute($options['sideCache']);
+            $toDate->addMinute($options['sideCache']);
+        }
+
+        $q = DB::table('server_stats');
+        $statsInterval = $options['statsInterval'] * 60;
+        if ($servers === null) {
+            $q->select(DB::raw('ROUND(UNIX_TIMESTAMP(`recorded_at`)/'.$statsInterval.')*'.$statsInterval.' as recorded_at, MAX(`players`) as players'));
+        } else {
+            $q->select(DB::raw('`server_id`, UNIX_TIMESTAMP(`recorded_at`) as recorded_at, `players`'));
+        }
+
+        if ($servers !== null) {
+            $q->whereIn('server_id', $servers);
+        }
+        if ($fromDate !== null) {
+            $q->where('recorded_at', '>=', $fromDate);
+        }
+        if ($toDate != null) {
+            $q->where('recorded_at', '<', $toDate);
+        }
+
+        $groupBy = [];
+        if ($servers !== null) {
+            $groupBy[] = '`server_id`';
+        }
+        $groupBy[] = 'ROUND(UNIX_TIMESTAMP(`recorded_at`)/'.$statsInterval.')';
+        $q->groupBy(DB::raw(join(',', $groupBy)));
+        $q->orderBy('recorded_at', 'asc');
+
+        $stats = [];
+        $q->each(function ($v, $k) use (&$stats) {
+            if (!isset($v->server_id)) {
+                $stats[] = [$v->recorded_at * 1000, $v->players];
+            } else {
+                $stats[$v->server_id][] = [$v->recorded_at * 1000, $v->players];
+            }
+        });
+
+        if (!$isNavigator) {
+            foreach ($servers as $k => $v) {
+                $servers[$k] = $v + 0;
+            }
+
+            return response()->json([
+                'servers'       => $servers,
+                'fromDate'      => $fromDate->toDateTimeString(),
+                'toDate'        => $toDate->toDateTimeString(),
+                'statsInterval' => $options['statsInterval'],
+                'stats'         => $stats
+            ]);
+        } else {
+            return response()->json([
+                'stats' => $stats
+            ]);
+        }
     }
 
     public function getRealtimeServersStats(Request $req)

@@ -29,8 +29,11 @@
 
         <div :class="'container content-margin-top' + (options.expanded ? ' container-expanded' : '')">
             <div class="clearfix" v-cloak>
-                <div id="global-graph">
-                    <div class="graph-container"></div>
+                <div id="global-graph" class="text-center">
+                    <button v-on:click="toggleServersGraphOption" class="btn btn-primary">
+                        @{{ options.showServersGraph ? '@lang('server.options.hide_servers_chart')' :
+                            '@lang('server.options.show_servers_chart')' }}</button>
+                    <div v-show="options.showServersGraph" class="graph-container"></div>
                 </div>
                 <div class="filters">
                     <div class="filters-head">

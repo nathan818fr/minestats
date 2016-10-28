@@ -42,7 +42,9 @@ return [
     ],
 
     'options' => [
-        'toggle_expanded_mode' => 'Toggle expanded mode'
+        'toggle_expanded_mode' => 'Toggle expanded mode',
+        'show_servers_chart'   => 'Show servers chart',
+        'hide_servers_chart'   => 'Hide servers chart',
     ],
 
 ];

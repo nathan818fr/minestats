@@ -29,7 +29,7 @@ require('vue-resource');
 /**
  * Highchart
  */
-window.Highcharts = require('highcharts');
+window.Highcharts = require('highcharts/highstock');
 
 /**
  * Moment

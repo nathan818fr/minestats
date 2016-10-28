@@ -1,4 +1,5 @@
 const notify = require('./notify');
+const ServersGraph = require('./servers-graph');
 
 /*
  * Per-servers realtime graph manager
@@ -172,7 +173,7 @@ ServersRealtimeGraphs.prototype = {
                 enabled: false
             },
             series: [{
-                name: 'Random data',
+                name: 'Players',
                 marker: {
                     enabled: false
                 }
@@ -373,7 +374,8 @@ const serversList = new Vue({
                 types: []
             },
             options: {
-                expanded: false
+                expanded: false,
+                showServersGraph: false
             },
             errors: {}
         };
@@ -396,8 +398,10 @@ const serversList = new Vue({
     },
 
     created: function () {
+        this.serversGraph = null;
         this.serversRealtimeGraphs = new ServersRealtimeGraphs(this);
         this.fetchServers();
+
         // Full reload every 5 minutes
         this.fetchServersTimer = setInterval(function () {
             this.fetchServers();
@@ -420,6 +424,32 @@ const serversList = new Vue({
     updated: function () {
         this.serversRealtimeGraphs.updateServers();
         this.serversRealtimeGraphs.reflowContainers();
+        this.serversGraph && this.serversGraph.reflowContainers();
+        if (this.options.showServersGraph && this.serversGraph === null) {
+            this.serversGraph = new ServersGraph(function () {
+                return $('#global-graph');
+            }, function () {
+                var serversIds = [];
+                var orderedServers = this.orderedServers;
+                for (var i in orderedServers) {
+                    serversIds.push(orderedServers[i].id);
+                }
+                return serversIds;
+            }.bind(this), function (serverId) {
+                var server;
+                for (var i in this.servers) {
+                    if (this.servers[i].id == serverId) {
+                        server = this.servers[i];
+                        break;
+                    }
+                }
+
+                return {
+                    name: server.name,
+                    color: '#' + server.color
+                }
+            }.bind(this));
+        }
     },
 
     beforeDestroy: function () {
@@ -443,6 +473,7 @@ const serversList = new Vue({
                 this.loaded = true;
                 this.servers = res.body;
                 this.serversRealtimeGraphs.updateData();
+                this.serversGraph && this.serversGraph.updateGraphData();
             }, function (res) {
                 console.log(notify);
                 notify.ajaxError('Unable to update servers list', res);
@@ -477,7 +508,13 @@ const serversList = new Vue({
         },
         toggleExpandedOption: function () {
             this.options.expanded = !this.options.expanded;
-            store.set('minestats.serversList.options', this.options);
+            var savedOptions = {
+                expanded: this.options.expanded
+            };
+            store.set('minestats.serversList.options', savedOptions);
+        },
+        toggleServersGraphOption: function () {
+            this.options.showServersGraph = !this.options.showServersGraph;
         }
     },
 
