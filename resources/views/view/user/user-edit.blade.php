@@ -48,6 +48,13 @@
             {!! Form::label('acl', trans('user.acl'), ['class' => $col1 . ' control-label']) !!}
             <div class="{{ $col2 }}">
                 {!! Form::select('acl', $acls, null, ['class' => 'form-control']) !!}
+                <p class="help-block">
+                    @foreach(\MineStats\Models\User::ACL_BY_ID as $id => $name)
+                        @lang('user.acl_names.' . $name)@lang('punctuation.colon')
+                        @lang('user.acl_helps.' . $name)
+                        <br>
+                    @endforeach
+                </p>
             </div>
         </div>
         <div class="form-group">

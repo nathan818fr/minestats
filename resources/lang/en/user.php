@@ -27,5 +27,10 @@ return [
         'OWNER' => 'Owner',
         'ADMIN' => 'Admin',
         'USER'  => 'User',
+    ],
+    'acl_helps' => [
+        'OWNER' => 'Can manage users & servers',
+        'ADMIN' => 'Can manage servers',
+        'USER'  => 'Can view servers',
     ]
 ];
