@@ -224,11 +224,16 @@ ServersGraph.prototype = {
             this.graph.series[0].remove(false);
 
         // Add new series
+        var j = 0;
         for (var i in serversIds) {
             var serverId = serversIds[i];
             var stat = stats[serverId];
             if (stat) {
                 var serverParams = this.getServerParams(serverId);
+                var hidden = this.hiddenSeries[serverParams['name']];
+                if (hidden === undefined) {
+                    hidden = (j >= 5);
+                }
                 this.graph.addSeries({
                     name: serverParams['name'],
                     color: serverParams['color'],
@@ -236,9 +241,10 @@ ServersGraph.prototype = {
                     dataGrouping: {
                         enabled: false
                     },
-                    visible: !this.hiddenSeries[serverParams['name']]
+                    visible: !hidden
                 }, false);
             }
+            j++;
         }
 
         this.graph.redraw();
