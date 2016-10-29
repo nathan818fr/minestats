@@ -53,6 +53,10 @@ class AppServiceProvider extends ServiceProvider
 
             return ($r['error_count'] === 0 && $r['warning_count'] === 0);
         });
+
+        Validator::extend('color', function ($attribute, $value, $parameters) {
+            return preg_match('#^\#[0-9a-fA-F]{6}$#', $value);
+        });
     }
 
     /**

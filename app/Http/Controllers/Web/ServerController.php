@@ -56,7 +56,8 @@ class ServerController extends Controller
             'ip'        => 'required|host',
             'port'      => 'integer|min:1|max:65536',
             'type'      => 'required|in:'.join(',', TypeRepository::getTypes()),
-            'languages' => 'array'
+            'languages' => 'array',
+            'color'     => 'required|color',
         ]);
 
         return \DB::transaction(function () use ($serverId, $req) {
@@ -76,6 +77,9 @@ class ServerController extends Controller
             $server->ip = $req->get('ip');
             $server->port = $req->has('port') ? $req->get('port') : null;
             $server->type = $req->get('type');
+            $server->color = substr($req->get('color'), 1);
+            $server->auto_color = $req->has('auto_color');
+            // TODO(nathan818): Update auto_color immediately here?
 
             $server->save();
 
