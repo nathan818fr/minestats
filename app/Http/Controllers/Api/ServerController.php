@@ -171,9 +171,9 @@ class ServerController extends Controller
         $q = DB::table('server_stats');
         $statsInterval = $options['statsInterval'] * 60;
         if ($servers === null) {
-            $q->select(DB::raw('ROUND(UNIX_TIMESTAMP(`recorded_at`)/'.$statsInterval.')*'.$statsInterval.' as recorded_at, MAX(`players`) as players'));
+            $q->select(DB::raw('FROM_UNIXTIME(ROUND(UNIX_TIMESTAMP(`recorded_at`)/'.$statsInterval.')*'.$statsInterval.') as recorded_at, MAX(`players`) as players'));
         } else {
-            $q->select(DB::raw('`server_id`, UNIX_TIMESTAMP(`recorded_at`) as recorded_at, `players`'));
+            $q->select(DB::raw('`server_id`, `recorded_at`, `players`'));
         }
 
         if ($servers !== null) {
@@ -196,10 +196,11 @@ class ServerController extends Controller
 
         $stats = [];
         $q->each(function ($v, $k) use (&$stats) {
+            $timestamp = Carbon::createFromFormat('Y-m-d H:i:s', $v->recorded_at)->getTimestamp() * 1000;
             if (!isset($v->server_id)) {
-                $stats[] = [$v->recorded_at * 1000, $v->players];
+                $stats[] = [$timestamp, $v->players];
             } else {
-                $stats[$v->server_id][] = [$v->recorded_at * 1000, $v->players];
+                $stats[$v->server_id][] = [$timestamp, $v->players];
             }
         });
 

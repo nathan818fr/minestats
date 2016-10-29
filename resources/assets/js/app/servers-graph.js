@@ -45,7 +45,14 @@ ServersGraph.prototype = {
                 series: {
                     data: navigatorData
                 },
-                height: 20
+                height: 20,
+                xAxis: {
+                    labels: {
+                        formatter: function () {
+                            return moment(this.value).format('L');
+                        }
+                    }
+                }
             },
             rangeSelector: {
                 buttons: [{
@@ -72,6 +79,7 @@ ServersGraph.prototype = {
             xAxis: {
                 type: 'datetime',
                 tickPixelInterval: 250,
+                ordinal: false,
                 labels: {
                     formatter: function () {
                         return moment(this.value).format('L LT');
