@@ -43,6 +43,20 @@
             </div>
         </div>
         <div class="form-group">
+            {!! Form::label('color', trans('server.color'), ['class' => $col1 . ' control-label']) !!}
+            <div class="{{ $col2 }}">
+                <label>
+                    {!! Form::checkbox('auto_color', null, $server !== null ? null : true, ['class' => '']) !!}
+                    @lang('server.auto_color')
+                </label>
+                <span class="help-text">
+                    @lang('server.auto_color_help')
+                </span>
+
+                {!! Form::input('color', 'color', $server !== null ? '#' . $server->color : '#00b9e5', ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div class="form-group">
             {!! Form::label('languages', trans('server.server_languages'), ['class' => $col1 . ' control-label']) !!}
             <div class="{{ $col2 }}">
                 <table class="table">
