@@ -9,6 +9,7 @@ ServersGraph.prototype = {
         this.getServers = getServers;
         this.getServerParams = getServerParams;
         this.graph = null;
+        this.hiddenSeries = {};
         this.cache = null;
 
         this.loadNavigator();
@@ -101,6 +102,16 @@ ServersGraph.prototype = {
                     width: 1,
                     color: '#808080'
                 }]
+            },
+            plotOptions: {
+                series: {
+                    events: {
+                        legendItemClick: function (event) {
+                            var visible = !event.target.visible;
+                            this.hiddenSeries[event.target.name] = !visible;
+                        }.bind(this)
+                    }
+                }
             },
             series: [
                 {
@@ -224,7 +235,8 @@ ServersGraph.prototype = {
                     data: stat,
                     dataGrouping: {
                         enabled: false
-                    }
+                    },
+                    visible: !this.hiddenSeries[serverParams['name']]
                 }, false);
             }
         }
