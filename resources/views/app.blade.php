@@ -1,4 +1,3 @@
-@include('js-localization::head')
 <!DOCTYPE html>
 <html lang="{{ App::getLocale() }}">
 <head>
