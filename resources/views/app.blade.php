@@ -80,6 +80,7 @@
     @lang('general.footer.made_by', ['authors' => '<a href="https://github.com/nathan818fr">Nathan Poirier (nathan818)</a>'])
     -
     @lang('general.footer.source_code_available', ['source' => '<a href="https://github.com/nathan818fr/minestats">Github</a>'])
+    <a class="github-button" href="https://github.com/nathan818fr/minestats" data-style="mega" data-count-href="/nathan818fr/minestats/stargazers" data-count-api="/repos/nathan818fr/minestats#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star nathan818fr/minestats on GitHub">Star</a>
 </footer>
 
 <!-- JS -->
@@ -100,6 +101,8 @@
     ga('create', 'UA-86429797-1', 'auto');
     ga('send', 'pageview');
 </script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+<style>footer iframe {vertical-align: middle;}</style>
 <!-- Production end -->
 
 </body>
