@@ -122,7 +122,7 @@ ServersGraph.prototype = {
             tooltip: {
                 useHTML: true,
                 formatter: function () {
-                    var str = moment(this.x).format('LL LTS') + '<br>';
+                    var str = moment(this.x).format('llll') + '<br>';
                     for (var i = 0; i < this.points.length; i++) {
                         var point = this.points[i];
                         str += '<span style="color:' + point.color + ';">●</span> ' +
