@@ -51,7 +51,7 @@ If you like, you can install the same system to analyze your own network (Bungee
 
   You must run `php artisan schedule:run` every minutes, by example with crontab add:
   ```
-  * * * * * php /path/to/minstats/artisan schedule:run
+  * * * * * php /path/to/minestats/artisan schedule:run
   ```
   
 - You can access the site. The default credentials are admin / password!
