@@ -113,7 +113,7 @@ class Server extends Model
 
         $pinger = new MinecraftPinger($this->ip, $this->port);
         try {
-            $pingResponse = $pinger->ping(2000, 2000);
+            $pingResponse = $pinger->ping(2000, 2000, 338); // 338 is protocol version of 1.12.1
         } catch (MinecraftPingException $e) {
             $pingResponse = null;
         }
