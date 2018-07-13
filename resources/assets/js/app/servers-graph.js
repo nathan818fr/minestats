@@ -23,7 +23,7 @@ ServersGraph.prototype = {
     // - Private part
 
     loadNavigator: function () {
-        Vue.http.get('/api/servers/stats').then(function (res) {
+        Vue.http.get('api/servers/stats').then(function (res) {
             this.createGraph(res.body.stats);
         }.bind(this));
     },
@@ -205,7 +205,7 @@ ServersGraph.prototype = {
             from_date: moment(from).format('YYYY-MM-DD HH:mm:ss'),
             to_date: moment(to).format('YYYY-MM-DD HH:mm:ss')
         };
-        Vue.http.get('/api/servers/stats?' + $.param(params)).then(function (res) {
+        Vue.http.get('api/servers/stats?' + $.param(params)).then(function (res) {
             this.cache = res.body;
             if (this.cache.fromDate)
                 this.cache.fromDate = moment.utc(this.cache.fromDate).unix() * 1000;
