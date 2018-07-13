@@ -6,11 +6,12 @@ class MinecraftVersionsSeeder extends Seeder
 {
     private $versionsByType = [
         'PC' => [
-            4   => '1.7.2',
             5   => '1.7.10',
             47  => '1.8',
             107 => '1.9',
             210 => '1.10',
+            315 => '1.11',
+            335 => '1.12',
         ],
         'PE' => [
         ]
