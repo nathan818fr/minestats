@@ -60,6 +60,18 @@ If you like, you can install the same system to analyze your own network (Bungee
 
 You can change configuration in `.env` file.
 
+## Distribution
+
+Files under :
+
+- `public/assets/css`
+- `public/assets/fonts`
+- `public/assets/js`
+
+are generated from `resources/assets` using `$ gulp --production` (see `gulpfile.js`).
+
+They must be updated and included (production version only) when pushing.
+
 ## Why PHP ?
 
 I know that PHP is not the ideal language for this kind of site in real time.
