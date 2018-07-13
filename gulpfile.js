@@ -1,5 +1,5 @@
 const elixir = require('laravel-elixir');
-const shell = require("gulp-shell");
+const shell = require('gulp-shell');
 const run = require('gulp-run');
 
 require('laravel-elixir-vue-2');
@@ -16,7 +16,7 @@ require('laravel-elixir-vue-2');
  */
 
 gulp.task('refresh_js_localization', shell.task([
-    'php artisan js-localization:refresh'
+    'php artisan js-localization:refresh',
 ]));
 
 Elixir.extend('cachePath', function (phpPath, output) {
@@ -44,10 +44,13 @@ elixir(function (mix) {
 
     // Build css & js
     mix.sass([
-        'app.scss',
-        '../lib/flags/flags.css',
-        '../../../node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css',
-        '../../../node_modules/pnotify/src/pnotify.css',
-        '../../../node_modules/pnotify/src/pnotify.buttons.css'
-    ], 'public/assets/css/app.css').webpack('app.js', 'public/assets/js/app.js');
+            'app.scss',
+            '../lib/flags/flags.css',
+            '../../../node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css',
+            '../../../node_modules/pnotify/src/pnotify.css',
+            '../../../node_modules/pnotify/src/pnotify.buttons.css',
+        ], 'public/assets/css/app.css')
+        .webpack([
+            'app.js',
+        ], 'public/assets/js/app.js');
 });

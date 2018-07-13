@@ -23,7 +23,7 @@ require('bootstrap-multiselect');
  * and simple, leaving you to focus on building your next great project.
  */
 
-window.Vue = require('vue');
+window.Vue = require('../../../node_modules/vue/dist/vue.min.js');
 require('vue-resource');
 
 /**
@@ -41,10 +41,10 @@ window.moment = require('moment');
  */
 window.PNotify = require('pnotify');
 require('pnotify/src/pnotify.buttons.js');
-PNotify.prototype.options.styling = "fontawesome";
+PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.delay = 4000;
-PNotify.prototype.options.addclass = "stack-bottomright";
-PNotify.prototype.options.stack = {"dir1": "up", "dir2": "left", "push": "top", "firstpos1": 5, "firstpos2": 5};
+PNotify.prototype.options.addclass = 'stack-bottomright';
+PNotify.prototype.options.stack = {'dir1': 'up', 'dir2': 'left', 'push': 'top', 'firstpos1': 5, 'firstpos2': 5};
 PNotify.prototype.options.buttons.sticker = false;
 
 /**
