@@ -238,7 +238,7 @@ ServersRealtimeGraphs.prototype = {
             params.new_servers = newServers.join(',');
         if (this._pingMaxId !== null)
             params.max_id = this._pingMaxId;
-        this._vueServersList.$http.get('/api/servers/stats/realtime?' + $.param(params)).then(function (res) {
+        this._vueServersList.$http.get('api/servers/stats/realtime?' + $.param(params)).then(function (res) {
             always();
 
             servers.forEach(markFirstFill);
@@ -469,7 +469,7 @@ const serversList = new Vue({
                 options.versions = this.filters.versions.join(',');
             if (this.filters.types.length)
                 options.types = this.filters.types.join(',');
-            this.$http.get('/api/servers?' + $.param(options)).then(function (res) {
+            this.$http.get('api/servers?' + $.param(options)).then(function (res) {
                 this.loaded = true;
                 this.servers = res.body;
                 this.serversRealtimeGraphs.updateData();
