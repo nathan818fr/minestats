@@ -146,11 +146,14 @@
                                     </span>
                                 </h3>
                                 <div class="address">@{{ server.ip + (server.port ? ':' + server.port : '') }}</div>
-                                <ul class="versions">
-                                    <li v-for="version in server.versions" class="version">
-                                        @{{ version.name }}
-                                    </li>
-                                </ul>
+                                <div class="versions">
+                                    <span v-if="server.versions.length > 0">
+                                        <template v-if="server.versions.length > 1">
+                                            @{{ server.versions[server.versions.length - 1].name }} <i class="fa fa-long-arrow-right"></i>
+                                        </template>
+                                        @{{ server.versions[0].name }}
+                                    </span>
+                                </div>
                                 <div class="status status-players" v-if="server.players >= 0">
                                     @lang('server.players')@lang('punctuation.colon') @{{ server.players | number-count }}
                                     <span v-if="server.playersProgress !== undefined" class="progression">

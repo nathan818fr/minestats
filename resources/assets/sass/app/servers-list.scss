@@ -103,14 +103,13 @@
           font-size: 14px;
         }
 
-        ul.versions {
-          list-style: none;
+        .versions {
           margin: 3px 0 0;
           padding: 0;
           font-size: 11px;
           min-height: 19px;
 
-          li {
+          span {
             display: inline-block;
             margin-right: 6px;
             padding: 0 4px;
