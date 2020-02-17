@@ -14,6 +14,7 @@ class MinecraftVersionsSeeder extends Seeder
             335 => '1.12',
             393 => '1.13',
             477 => '1.14',
+            573 => '1.15',
         ],
         'PE' => [
         ]
