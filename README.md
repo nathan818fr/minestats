@@ -1,12 +1,17 @@
 # MINESTATS
 
+> [!WARNING]
+> **MineStats is no longer maintained.** For a maintained alternative, see
+> [CraftStats](https://github.com/MrMicky-FR/CraftStats) by MrMicky-FR, which
+> was inspired by MineStats.
+
 MineStats is a realtime Minecraft PC/PE servers list.
 You can see the current status of servers and filter them according to your criteria.
 You can also view server statistics over several days (or months) and compare servers to each other.
 
 ## Try it!
 
-A demo of the latest release is available on [https://minestats.info/](https://minestats.info/).
+The demo that used to run on minestats.info is no longer online.
 
 If you like, you can install the same system to analyze your own network (Bungee, Spigot, ...).
 
