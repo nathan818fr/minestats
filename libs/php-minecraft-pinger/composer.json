@@ -1,0 +1,22 @@
+{
+    "name": "nathan818/php-minecraft-pinger",
+    "description": "Ping minecraft PC servers from PHP.",
+    "type": "library",
+    "license": "AGPL-3.0",
+    "authors": [
+        {
+            "name": "Nathan Poirier",
+            "email": "nathan@poirier.io"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.0.0",
+        "nathan818/phpuc-net-sockets": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MinecraftPinger\\": "src/"
+        }
+    }
+}
